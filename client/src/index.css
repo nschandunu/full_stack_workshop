@@ -260,3 +260,43 @@ button {
   font-weight: 800;
   text-align: right;
 }
+
+/* My Tasks */
+
+.my-tasks {
+  margin-top: 32px;
+  padding-bottom: 32px;
+}
+
+.task-name {
+  font-weight: 800;
+}
+
+.priority-badge {
+  display: inline-block;
+  padding: 5px 10px;
+  border: 2px solid var(--border);
+  font-size: 12px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.priority-high {
+  background: var(--danger);
+}
+
+.priority-medium {
+  background: var(--primary);
+}
+
+.priority-low {
+  background: #b9d7ff;
+}
+
+.status-todo {
+  background: var(--muted);
+}
+
+.status-in-progress {
+  background: var(--primary);
+}

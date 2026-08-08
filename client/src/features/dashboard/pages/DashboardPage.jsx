@@ -2,6 +2,7 @@ import DashboardHeader from "../components/DashboardHeader";
 import DashboardStats from "../components/DashboardStats";
 import RecentProjects from "../components/RecentProjects";
 import useDashboard from "../hooks/useDashboard";
+import MyTasks from "../components/MyTasks";
 
 const DashboardPage = () => {
   const { data, isLoading, error } = useDashboard();
@@ -15,13 +16,15 @@ const DashboardPage = () => {
   }
 
   return (
-    <main className="dashboard-page">
-      <DashboardHeader />
+  <main className="dashboard-page">
+    <DashboardHeader />
 
-      <DashboardStats stats={data.stats} />
+    <DashboardStats stats={data.stats} />
 
-      <RecentProjects />
-    </main>
+    <RecentProjects />
+
+    <MyTasks />
+  </main>
   );
 };
 
