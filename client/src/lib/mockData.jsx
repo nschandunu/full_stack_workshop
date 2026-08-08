@@ -9,23 +9,23 @@ import {
 export const mockUsers = [
   UserSchema.parse({
     id: "user-1",
-    name: "Alice Chen",
-    email: "alice.chen@example.com",
-    avatarUrl: "https://i.pravatar.cc/150?u=alice.chen@example.com",
+    name: "Oshada Rashmika",
+    email: "oshada@gmail.com",
+    avatarUrl: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80",
     role: "admin",
   }),
   UserSchema.parse({
     id: "user-2",
-    name: "Bob Martinez",
-    email: "bob.martinez@example.com",
-    avatarUrl: "https://i.pravatar.cc/150?u=bob.martinez@example.com",
+    name: "Senuki Chanduni",
+    email: "senuki@gmail.com",
+    avatarUrl: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&auto=format&fit=crop&q=80 ",
     role: "member",
   }),
   UserSchema.parse({
     id: "user-3",
-    name: "Clara Osei",
-    email: "clara.osei@example.com",
-    avatarUrl: "https://i.pravatar.cc/150?u=clara.osei@example.com",
+    name: "Wonder woman",
+    email: "wonder@example.com",
+    avatarUrl: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&auto=format&fit=crop&q=80",
     role: "member",
   }),
 ];
