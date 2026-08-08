@@ -1,6 +1,6 @@
 import KanbanCard from './KanbanCard.jsx';
 
-function KanbanColumn({ column, tasks, onMoveLeft, onMoveRight, onDelete, onDragStart, onDragEnd, onDrop }) {
+function KanbanColumn({ column, tasks, onOpen, onDragStart, onDrop }) {
   return (
     <section
       className="kanban-column"
@@ -19,11 +19,8 @@ function KanbanColumn({ column, tasks, onMoveLeft, onMoveRight, onDelete, onDrag
           <KanbanCard
             key={task.id}
             task={task}
-            onMoveLeft={() => onMoveLeft(task)}
-            onMoveRight={() => onMoveRight(task)}
-            onDelete={() => onDelete(task)}
-            onDragStart={(event) => onDragStart(event, task)}
-            onDragEnd={onDragEnd}
+            onOpen={onOpen}
+            onDragStart={(event) => onDragStart?.(event, task)}
           />
         ))}
       </div>
