@@ -6,6 +6,7 @@ import MyTasks from "../components/MyTasks";
 import UpcomingDeadlines from "../components/UpcomingDeadlines";
 import ActivityFeed from "../components/ActivityFeed";
 import ProjectProgress from "../components/ProjectProgress";
+import QuickActions from "../components/QuickActions";
 
 const DashboardPage = () => {
   const { data, isLoading, error } = useDashboard();
@@ -22,7 +23,8 @@ const DashboardPage = () => {
   <main className="dashboard-page">
     <DashboardHeader />
     <DashboardStats stats={data.stats} />
-
+    <QuickActions />
+    
     <RecentProjects />
     <MyTasks />
     <UpcomingDeadlines />
