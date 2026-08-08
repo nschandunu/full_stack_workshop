@@ -15,8 +15,10 @@ function KanbanBoard({ board, columns, tasksByColumn, activeTask, onMoveTask, on
         {columns.map((column, index) => (
           <KanbanColumn
             key={column.id}
-            column={column}
-            tasks={tasksByColumn[column.id] ?? []}
+            title={column.label}
+            status={column.id}
+            tasks={Object.values(tasksByColumn).flat()}
+            onOpenTask={() => {}}
             onMoveLeft={(task) => onMoveTask(task, columns[index - 1]?.id ?? column.id)}
             onMoveRight={(task) => onMoveTask(task, columns[index + 1]?.id ?? column.id)}
             onDelete={onDeleteTask}
