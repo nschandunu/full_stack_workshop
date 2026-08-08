@@ -700,3 +700,39 @@ button {
   color: var(--text-muted);
   font-size: 12px;
 }
+
+/* Dashboard Search */
+
+.dashboard-search {
+  display: flex;
+  width: 100%;
+  margin-bottom: 24px;
+  border: 2px solid var(--border);
+  background: var(--surface);
+}
+
+.dashboard-search input {
+  width: 100%;
+  padding: 13px 16px;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: var(--text);
+}
+
+.dashboard-search input::placeholder {
+  color: var(--text-muted);
+}
+
+.dashboard-search button {
+  padding: 0 16px;
+  border: none;
+  border-left: 2px solid var(--border);
+  background: var(--muted);
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.dashboard-search button:hover {
+  background: var(--primary);
+}

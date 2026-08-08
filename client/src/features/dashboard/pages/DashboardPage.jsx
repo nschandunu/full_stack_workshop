@@ -8,6 +8,7 @@ import ActivityFeed from "../components/ActivityFeed";
 import ProjectProgress from "../components/ProjectProgress";
 import QuickActions from "../components/QuickActions";
 import Notifications from "../components/Notifications";
+import DashboardSearch from "../components/DashboardSearch";
 
 const DashboardPage = () => {
   const { data, isLoading, error } = useDashboard();
@@ -22,6 +23,7 @@ const DashboardPage = () => {
 
   return (
   <main className="dashboard-page">
+    <DashboardSearch />
     <DashboardHeader />
     <DashboardStats stats={data.stats} />
     <QuickActions />
