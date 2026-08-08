@@ -64,10 +64,6 @@ function KanbanCard({ task, onOpen, onDragStart }) {
           <dd>{formatDueDate(task.dueDate)}</dd>
         </div>
       </dl>
-
-      <div className="kanban-card__footer">
-        <span>Status: {task.status}</span>
-      </div>
     </article>
   );
 }
