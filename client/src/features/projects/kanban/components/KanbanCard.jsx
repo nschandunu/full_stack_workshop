@@ -1,9 +1,3 @@
-const priorityStyles = {
-  low: { backgroundColor: '#ecfdf5', color: '#047857' },
-  medium: { backgroundColor: '#eff6ff', color: '#1d4ed8' },
-  high: { backgroundColor: '#fef2f2', color: '#b91c1c' },
-};
-
 const formatDueDate = (dueDate) => {
   if (!dueDate) {
     return 'No due date';
@@ -24,7 +18,7 @@ const formatDueDate = (dueDate) => {
 
 function KanbanCard({ task, onOpen, onDragStart, onContextMenu }) {
   const priorityKey = task.priority?.toLowerCase() ?? 'medium';
-  const priorityStyle = priorityStyles[priorityKey] ?? priorityStyles.medium;
+  const priorityClass = `kanban-card__badge kanban-card__badge--${priorityKey}`;
 
   return (
     <article
@@ -51,7 +45,7 @@ function KanbanCard({ task, onOpen, onDragStart, onContextMenu }) {
     >
       <header className="kanban-card__header">
         <h3>{task.title}</h3>
-        <span className="kanban-card__badge" style={priorityStyle}>
+        <span className={priorityClass}>
           {priorityKey}
         </span>
       </header>

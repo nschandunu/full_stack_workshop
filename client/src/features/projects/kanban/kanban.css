@@ -181,6 +181,27 @@
   white-space: nowrap;
 }
 
+.kanban-card__badge--high {
+  background: var(--color-priority-high);
+  color: var(--color-text-primary);
+}
+
+.kanban-card__badge--medium {
+  background: var(--color-priority-medium);
+  color: var(--color-text-primary);
+}
+
+.kanban-card__badge--low {
+  background: var(--color-priority-low);
+  color: var(--color-text-primary);
+}
+
+.kanban-card__badge--todo,
+.kanban-card__badge--neutral {
+  background: var(--color-priority-neutral);
+  color: var(--color-text-primary);
+}
+
 .kanban-context-menu {
   z-index: 1000;
   min-width: 15rem;
