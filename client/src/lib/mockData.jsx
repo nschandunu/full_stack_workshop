@@ -18,7 +18,7 @@ export const mockUsers = [
     id: "user-2",
     name: "Senuki Chanduni",
     email: "senuki@gmail.com",
-    avatarUrl: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&auto=format&fit=crop&q=80 ",
+    avatarUrl: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&auto=format&fit=crop&q=80",
     role: "member",
   }),
   UserSchema.parse({
