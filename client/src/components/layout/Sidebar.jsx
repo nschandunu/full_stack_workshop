@@ -10,7 +10,7 @@ const navItems = [
   { id: 'team', label: 'Team', href: '#', icon: 'users' },
   { id: 'files', label: 'Files', href: '#', icon: 'folder' },
   { id: 'help', label: 'Help', href: '#', icon: 'help' },
-  { id: 'settings', label: 'Settings', href: '#', icon: 'settings' },
+  { id: 'settings', label: 'Settings', href: '/features/projects/settings', icon: 'settings' },
 ];
 
 function Icon({ name }) {
