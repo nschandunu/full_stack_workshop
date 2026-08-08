@@ -12,6 +12,7 @@
 }
 
 .modal {
+  position: relative;
   background-color: #ffffff;
   border: 2px solid #000000;
   border-radius: 0;
@@ -21,11 +22,35 @@
   box-sizing: border-box;
 }
 
+.closeButton {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 32px;
+  height: 32px;
+  background-color: #ffffff;
+  border: 2px solid #000000;
+  border-radius: 0;
+  font-weight: bold;
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  padding: 0;
+}
+
+.closeButton:hover {
+  background-color: #f5b700;
+}
+
 .title {
   font-size: 1.5rem;
   font-weight: bold;
   margin: 0 0 16px 0;
   color: #000000;
+  padding-right: 36px;
 }
 
 .description {
@@ -42,7 +67,29 @@
 .metaGroup {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 12px;
+}
+
+.badge {
+  display: inline-block;
+  font-weight: bold;
+  text-transform: uppercase;
+  border: 2px solid #000000;
+  border-radius: 0;
+  padding: 2px 8px;
+  font-size: 12px;
+}
+
+.badgeHigh {
+  background-color: #f87171;
+}
+
+.badgeMedium {
+  background-color: #f5b700;
+}
+
+.badgeLow {
+  background-color: #93c5fd;
 }
 
 .muted {
