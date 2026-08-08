@@ -92,4 +92,27 @@ export const dashboardData = {
     time: "Yesterday",
   },
   ],
+  notifications: [
+  {
+    id: 1,
+    type: "warning",
+    title: "Overdue task",
+    message: "Implement authentication is overdue.",
+    time: "10 min ago",
+  },
+  {
+    id: 2,
+    type: "info",
+    title: "Project updated",
+    message: "Mobile Application progress was updated.",
+    time: "1 hour ago",
+  },
+  {
+    id: 3,
+    type: "success",
+    title: "Task completed",
+    message: "Marketing Website task was completed.",
+    time: "3 hours ago",
+  },
+  ],
 };
