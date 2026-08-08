@@ -22,7 +22,7 @@ export default function TaskCard({ task, onOpen }) {
         : styles.badgeLow;
 
   return (
-    <div className={styles.card}>
+    <div className={styles.card} onClick={() => onOpen(task.id)}>
       <div className={styles.title}>{task.title}</div>
       <span className={`${styles.badge} ${badgeClass}`}>{task.priority}</span>
       {task.dueDate && <div>{task.dueDate.slice(0, 10)}</div>}
