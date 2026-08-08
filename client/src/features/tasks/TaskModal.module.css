@@ -16,3 +16,8 @@
   width: 90%;
   box-sizing: border-box;
 }
+
+.muted {
+  font-size: 0.85em;
+  color: #666666;
+}

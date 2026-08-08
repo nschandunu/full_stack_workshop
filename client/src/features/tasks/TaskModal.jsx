@@ -19,7 +19,15 @@ export default function TaskModal({ task, onClose }) {
   return (
     <div className={styles.overlay} onClick={onClose}>
       <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
-        {task.title}
+        <h2>{task.title}</h2>
+        {task.description && <p>{task.description}</p>}
+        <div>{task.priority}</div>
+        {task.dueDate && <div>{task.dueDate.slice(0, 10)}</div>}
+        {task.assignee && <div>{task.assignee}</div>}
+        <div className={styles.muted}>
+          <div>Created: {task.createdAt.slice(0, 10)}</div>
+          <div>Updated: {task.updatedAt.slice(0, 10)}</div>
+        </div>
       </div>
     </div>
   );
