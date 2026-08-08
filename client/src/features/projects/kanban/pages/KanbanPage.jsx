@@ -7,15 +7,10 @@ function KanbanPage() {
   return (
     <main>
       <KanbanBoard
-        board={kanban.board}
-        columns={kanban.columns}
-        tasksByColumn={kanban.tasksByColumn}
-        activeTask={kanban.activeTask}
-        onMoveTask={kanban.moveTask}
-        onDeleteTask={kanban.removeTask}
-        onDragStart={kanban.handleDragStart}
-        onDragEnd={kanban.handleDragEnd}
-        onDropTask={kanban.handleDropTask}
+        tasks={kanban.tasks}
+        onOpenTask={(task) => {
+          void task;
+        }}
       />
     </main>
   );

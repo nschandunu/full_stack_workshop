@@ -1,35 +1,25 @@
 import KanbanColumn from './KanbanColumn.jsx';
-import TaskDragOverlay from './TaskDragOverlay.jsx';
 
-function KanbanBoard({ board, columns, tasksByColumn, activeTask, onMoveTask, onDeleteTask, onDragStart, onDragEnd, onDropTask }) {
+const columns = [
+  { status: 'todo', title: 'To Do' },
+  { status: 'doing', title: 'Doing' },
+  { status: 'done', title: 'Done' },
+];
+
+function KanbanBoard({ tasks, onOpenTask }) {
   return (
     <div className="kanban-board">
-      <header className="kanban-board__header">
-        <div>
-          <p className="kanban-board__eyebrow">CollabBoard</p>
-          <h1>{board.name}</h1>
-        </div>
-      </header>
-
       <div className="kanban-board__columns">
-        {columns.map((column, index) => (
+        {columns.map((column) => (
           <KanbanColumn
-            key={column.id}
-            title={column.label}
-            status={column.id}
-            tasks={Object.values(tasksByColumn).flat()}
-            onOpenTask={() => {}}
-            onMoveLeft={(task) => onMoveTask(task, columns[index - 1]?.id ?? column.id)}
-            onMoveRight={(task) => onMoveTask(task, columns[index + 1]?.id ?? column.id)}
-            onDelete={onDeleteTask}
-            onDragStart={onDragStart}
-            onDragEnd={onDragEnd}
-            onDrop={(event) => onDropTask(event, column.id)}
+            key={column.status}
+            title={column.title}
+            status={column.status}
+            tasks={tasks}
+            onOpenTask={onOpenTask}
           />
         ))}
       </div>
-
-      <TaskDragOverlay task={activeTask} />
     </div>
   );
 }
