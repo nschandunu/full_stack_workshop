@@ -11,5 +11,12 @@
  */
 
 export default function TaskCard({ task, onOpen }) {
-  return <div>{task.title}</div>;
+  return (
+    <div>
+      <div>{task.title}</div>
+      <div>{task.priority}</div>
+      {task.dueDate && <div>{task.dueDate.slice(0, 10)}</div>}
+      {task.assignee && <div>{task.assignee}</div>}
+    </div>
+  );
 }
