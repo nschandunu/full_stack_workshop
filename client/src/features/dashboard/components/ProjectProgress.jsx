@@ -3,6 +3,10 @@ import useDashboard from "../hooks/useDashboard";
 const ProjectProgress = () => {
   const { data } = useDashboard();
 
+  if (!data) {
+    return null;
+  }
+
   return (
     <section className="project-progress">
       <div className="section-header">

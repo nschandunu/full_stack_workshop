@@ -3,6 +3,10 @@ import useDashboard from "../hooks/useDashboard";
 const RecentProjects = () => {
   const { data } = useDashboard();
 
+  if (!data) {
+    return null;
+  }
+
   return (
     <section className="recent-projects">
       <div className="section-header">

@@ -3,6 +3,10 @@ import useDashboard from "../hooks/useDashboard";
 const MyTasks = () => {
   const { data } = useDashboard();
 
+  if (!data) {
+    return null;
+  }
+
   return (
     <section className="my-tasks">
       <div className="section-header">

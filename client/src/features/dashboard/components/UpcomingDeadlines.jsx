@@ -3,6 +3,10 @@ import useDashboard from "../hooks/useDashboard";
 const UpcomingDeadlines = () => {
   const { data } = useDashboard();
 
+  if (!data) {
+    return null;
+  }
+
   return (
     <section className="upcoming-deadlines">
       <div className="section-header">
