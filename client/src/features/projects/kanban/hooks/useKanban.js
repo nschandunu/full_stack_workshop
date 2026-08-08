@@ -1,24 +1,47 @@
 import { useEffect, useMemo, useState } from 'react';
-import { KANBAN_STATUSES, deleteTask as deleteTaskRequest, getBoards, getTasks, moveTask as moveTaskRequest } from '../services/kanbanApi.js';
-
-const defaultColumns = [
-  { id: 'todo', label: 'To Do' },
-  { id: 'doing', label: 'Doing' },
-  { id: 'done', label: 'Done' },
-];
+import { KANBAN_STATUSES, createTask as createTaskRequest, deleteTask as deleteTaskRequest, getBoards, getTasks, moveTask as moveTaskRequest, updateTask as updateTaskRequest } from '../services/kanbanApi.js';
 
 export function useKanban() {
   const [boards, setBoards] = useState([]);
   const [activeBoardId, setActiveBoardId] = useState(null);
   const [tasks, setTasks] = useState([]);
   const [activeTask, setActiveTask] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    void Promise.all([getBoards(), getTasks()]).then(([boardList, taskList]) => {
-      setBoards(boardList);
-      setActiveBoardId(boardList[0]?.id ?? null);
-      setTasks(taskList);
-    });
+    let isMounted = true;
+
+    const loadKanbanData = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+
+        const [boardList, taskList] = await Promise.all([getBoards(), getTasks()]);
+
+        if (!isMounted) {
+          return;
+        }
+
+        setBoards(boardList);
+        setActiveBoardId(boardList[0]?.id ?? null);
+        setTasks(taskList);
+      } catch (loadError) {
+        if (isMounted) {
+          setError(loadError instanceof Error ? loadError : new Error('Failed to load kanban data.'));
+        }
+      } finally {
+        if (isMounted) {
+          setLoading(false);
+        }
+      }
+    };
+
+    void loadKanbanData();
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   const board = boards.find((entry) => entry.id === activeBoardId) ?? boards[0] ?? { id: 'board-1', name: 'CollabBoard' };
@@ -34,18 +57,89 @@ export function useKanban() {
     [tasks],
   );
 
+  const syncTaskInState = (taskId, updater) => {
+    setTasks((currentTasks) => currentTasks.map((task) => (task.id === taskId ? updater(task) : task)));
+  };
+
+  const addTask = async (taskInput) => {
+    try {
+      const createdTask = await createTaskRequest({
+        ...taskInput,
+        boardId: taskInput.boardId ?? board.id,
+      });
+
+      setTasks((currentTasks) => [...currentTasks, createdTask]);
+      return createdTask;
+    } catch (addError) {
+      setError(addError instanceof Error ? addError : new Error('Failed to add task.'));
+      throw addError;
+    }
+  };
+
+  const editTask = async (taskId, changes) => {
+    try {
+      const updatedTask = await updateTaskRequest(taskId, changes);
+
+      if (!updatedTask) {
+        throw new Error('Task not found.');
+      }
+
+      syncTaskInState(taskId, () => updatedTask);
+      return updatedTask;
+    } catch (editError) {
+      setError(editError instanceof Error ? editError : new Error('Failed to edit task.'));
+      throw editError;
+    }
+  };
+
+  const moveTaskToColumn = async (taskId, newStatus) => {
+    if (!KANBAN_STATUSES.includes(newStatus)) {
+      throw new Error('Invalid task status.');
+    }
+
+    try {
+      const updatedTask = await moveTaskRequest(taskId, newStatus);
+
+      if (!updatedTask) {
+        throw new Error('Task not found.');
+      }
+
+      syncTaskInState(taskId, () => updatedTask);
+      return updatedTask;
+    } catch (moveError) {
+      setError(moveError instanceof Error ? moveError : new Error('Failed to move task.'));
+      throw moveError;
+    }
+  };
+
+  const removeTask = async (taskOrId) => {
+    const taskId = typeof taskOrId === 'string' ? taskOrId : taskOrId?.id;
+
+    if (!taskId) {
+      throw new Error('Task id is required.');
+    }
+
+    try {
+      const deletedTask = await deleteTaskRequest(taskId);
+
+      if (!deletedTask) {
+        throw new Error('Task not found.');
+      }
+
+      setTasks((currentTasks) => currentTasks.filter((task) => task.id !== taskId));
+      return deletedTask;
+    } catch (removeError) {
+      setError(removeError instanceof Error ? removeError : new Error('Failed to remove task.'));
+      throw removeError;
+    }
+  };
+
   const moveTask = async (task, nextStatus) => {
     if (!task || task.status === nextStatus || !KANBAN_STATUSES.includes(nextStatus)) {
       return;
     }
 
-    setTasks((currentTasks) => currentTasks.map((item) => (item.id === task.id ? { ...item, status: nextStatus, updatedAt: new Date().toISOString() } : item)));
-    await moveTaskRequest(task.id, nextStatus);
-  };
-
-  const removeTask = async (task) => {
-    setTasks((currentTasks) => currentTasks.filter((item) => item.id !== task.id));
-    await deleteTaskRequest(task.id);
+    await moveTaskToColumn(task.id, nextStatus);
   };
 
   const handleDragStart = (_event, task) => {
@@ -69,31 +163,31 @@ export function useKanban() {
   };
 
   const handleAddTask = async (taskInput) => {
-    const now = new Date().toISOString();
-    const createdTask = {
-      id: crypto.randomUUID(),
-      title: taskInput.title,
-      description: taskInput.description ?? '',
-      status: taskInput.status ?? 'todo',
-      boardId: board.id,
-      createdAt: now,
-      updatedAt: now,
-    };
-
-    setTasks((currentTasks) => [...currentTasks, createdTask]);
+    await addTask(taskInput);
   };
+
+  const columns = [
+    { id: 'todo', label: 'To Do' },
+    { id: 'doing', label: 'Doing' },
+    { id: 'done', label: 'Done' },
+  ];
 
   return {
     board,
     boards,
-    columns: defaultColumns,
+    columns,
     tasks,
     tasksByColumn,
     activeTask,
     activeBoardId,
     setActiveBoardId,
-    moveTask,
+    loading,
+    error,
+    addTask,
+    editTask,
+    moveTaskToColumn,
     removeTask,
+    moveTask,
     handleDragStart,
     handleDragEnd,
     handleDropTask,
