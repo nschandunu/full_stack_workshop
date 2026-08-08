@@ -1,0 +1,19 @@
+:root {
+  --color-bg: #f1f2f4;
+  --color-surface: #ffffff;
+  --color-border: #000000;
+  --color-accent: #f5b800;
+  --color-priority-high: #f0555a;
+  --color-priority-medium: #f5b800;
+  --color-priority-low: #afd4f5;
+  --color-priority-neutral: #e0e0e0;
+  --color-text-primary: #000000;
+  --color-text-secondary: #6b6b6b;
+  --radius-sm: 2px;
+  --border-width: 2px;
+  --font-weight-heading: 800;
+  --font-weight-stat: 800;
+  --font-weight-body: 400;
+  --letter-spacing-eyebrow: 0.12em;
+  --letter-spacing-column: 0.08em;
+}
