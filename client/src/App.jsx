@@ -1,4 +1,4 @@
-import UserProfile from "./components/ui/UserProfile";
+import UserProfile from "./features/users/UserProfile";
 import "./App.css";
 
 function App() {
