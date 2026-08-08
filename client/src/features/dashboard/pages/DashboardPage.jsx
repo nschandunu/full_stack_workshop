@@ -4,6 +4,7 @@ import RecentProjects from "../components/RecentProjects";
 import useDashboard from "../hooks/useDashboard";
 import MyTasks from "../components/MyTasks";
 import UpcomingDeadlines from "../components/UpcomingDeadlines";
+import ActivityFeed from "../components/ActivityFeed";
 
 const DashboardPage = () => {
   const { data, isLoading, error } = useDashboard();
@@ -19,13 +20,12 @@ const DashboardPage = () => {
   return (
   <main className="dashboard-page">
     <DashboardHeader />
-
     <DashboardStats stats={data.stats} />
-
+    
     <RecentProjects />
-
     <MyTasks />
     <UpcomingDeadlines />
+    <ActivityFeed />
   </main>
   );
 };

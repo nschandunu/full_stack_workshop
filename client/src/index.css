@@ -375,3 +375,56 @@ button {
     border-bottom: 2px solid var(--border);
   }
 }
+
+/* Activity Feed */
+
+.activity-feed {
+  margin-top: 32px;
+  padding-bottom: 32px;
+}
+
+.activity-list {
+  border: 2px solid var(--border);
+  background: var(--surface);
+}
+
+.activity-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px;
+  border-bottom: 2px solid var(--border);
+}
+
+.activity-item:last-child {
+  border-bottom: none;
+}
+
+.activity-avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  flex-shrink: 0;
+  border: 2px solid var(--border);
+  background: var(--primary);
+  font-weight: 900;
+}
+
+.activity-content {
+  min-width: 0;
+}
+
+.activity-content p {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.activity-content span {
+  display: block;
+  margin-top: 3px;
+  color: var(--text-muted);
+  font-size: 12px;
+}
