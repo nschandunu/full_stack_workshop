@@ -22,7 +22,7 @@ const formatDueDate = (dueDate) => {
   }).format(parsedDate);
 };
 
-function KanbanCard({ task, onOpen, onDragStart }) {
+function KanbanCard({ task, onOpen, onDragStart, onContextMenu }) {
   const priorityKey = task.priority?.toLowerCase() ?? 'medium';
   const priorityStyle = priorityStyles[priorityKey] ?? priorityStyles.medium;
 
@@ -40,6 +40,10 @@ function KanbanCard({ task, onOpen, onDragStart }) {
       onDragStart={(event) => {
         event.dataTransfer.setData('text/plain', task.id);
         onDragStart?.(event, task);
+      }}
+      onContextMenu={(event) => {
+        event.preventDefault();
+        onContextMenu?.(event, task);
       }}
       aria-label={task.title}
       role="button"

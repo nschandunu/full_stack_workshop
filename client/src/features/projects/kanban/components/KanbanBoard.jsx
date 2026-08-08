@@ -6,7 +6,7 @@ const columns = [
   { status: 'done', title: 'Done' },
 ];
 
-function KanbanBoard({ tasks, onOpenTask }) {
+function KanbanBoard({ tasks, onOpenTask, onCardContextMenu }) {
   return (
     <div className="kanban-board">
       <div className="kanban-board__columns">
@@ -17,6 +17,7 @@ function KanbanBoard({ tasks, onOpenTask }) {
             status={column.status}
             tasks={tasks}
             onOpenTask={onOpenTask}
+            onCardContextMenu={onCardContextMenu}
           />
         ))}
       </div>

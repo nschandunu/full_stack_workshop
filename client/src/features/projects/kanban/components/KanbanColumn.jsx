@@ -1,6 +1,6 @@
 import KanbanCard from './KanbanCard.jsx';
 
-function KanbanColumn({ title, status, tasks, onOpenTask, onDragStart, onDrop }) {
+function KanbanColumn({ title, status, tasks, onOpenTask, onDragStart, onDrop, onCardContextMenu }) {
   const filteredTasks = tasks.filter((task) => task.status === status);
 
   return (
@@ -23,6 +23,7 @@ function KanbanColumn({ title, status, tasks, onOpenTask, onDragStart, onDrop })
             task={task}
             onOpen={onOpenTask}
             onDragStart={(event) => onDragStart?.(event, task)}
+            onContextMenu={onCardContextMenu}
           />
         ))}
       </div>
