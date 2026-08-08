@@ -1,6 +1,7 @@
 // @ts-check
 // @ts-ignore
 import styles from "./TaskCard.module.css";
+import { TaskPriority } from "../../lib/types.jsx";
 
 /**
  * @typedef {import("../../lib/types.jsx").Task} Task
@@ -13,10 +14,17 @@ import styles from "./TaskCard.module.css";
  */
 
 export default function TaskCard({ task, onOpen }) {
+  const badgeClass =
+    task.priority === TaskPriority.enum.high
+      ? styles.badgeHigh
+      : task.priority === TaskPriority.enum.medium
+        ? styles.badgeMedium
+        : styles.badgeLow;
+
   return (
     <div className={styles.card}>
       <div className={styles.title}>{task.title}</div>
-      <div>{task.priority}</div>
+      <span className={`${styles.badge} ${badgeClass}`}>{task.priority}</span>
       {task.dueDate && <div>{task.dueDate.slice(0, 10)}</div>}
       {task.assignee && <div>{task.assignee}</div>}
     </div>
