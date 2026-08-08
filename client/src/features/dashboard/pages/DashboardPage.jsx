@@ -9,12 +9,13 @@ import ProjectProgress from "../components/ProjectProgress";
 import QuickActions from "../components/QuickActions";
 import Notifications from "../components/Notifications";
 import DashboardSearch from "../components/DashboardSearch";
+import DashboardSkeleton from "../components/DashboardSkeleton";
 
 const DashboardPage = () => {
   const { data, isLoading, error } = useDashboard();
 
   if (isLoading) {
-    return <div>Loading...</div>;
+  return <DashboardSkeleton />;
   }
 
   if (error) {
