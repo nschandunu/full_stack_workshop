@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { KANBAN_STATUSES, deleteTask as deleteTaskRequest, getBoardTasks, getBoards, updateTask as updateTaskRequest } from '../services/kanbanApi.js';
+import { KANBAN_STATUSES, deleteTask as deleteTaskRequest, getBoards, getTasks, moveTask as moveTaskRequest } from '../services/kanbanApi.js';
 
 const defaultColumns = [
   { id: 'todo', label: 'To Do' },
@@ -14,7 +14,7 @@ export function useKanban() {
   const [activeTask, setActiveTask] = useState(null);
 
   useEffect(() => {
-    void Promise.all([getBoards(), getBoardTasks('board-1')]).then(([boardList, taskList]) => {
+    void Promise.all([getBoards(), getTasks()]).then(([boardList, taskList]) => {
       setBoards(boardList);
       setActiveBoardId(boardList[0]?.id ?? null);
       setTasks(taskList);
@@ -40,7 +40,7 @@ export function useKanban() {
     }
 
     setTasks((currentTasks) => currentTasks.map((item) => (item.id === task.id ? { ...item, status: nextStatus, updatedAt: new Date().toISOString() } : item)));
-    await updateTaskRequest(task.id, { status: nextStatus, boardId: task.boardId });
+    await moveTaskRequest(task.id, nextStatus);
   };
 
   const removeTask = async (task) => {
