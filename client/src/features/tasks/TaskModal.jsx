@@ -45,7 +45,7 @@ export default function TaskModal({ task, onClose }) {
   return (
     <div className={styles.overlay} onClick={onClose}>
       <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
-        <button
+        <button type="button"
           className={styles.closeButton}
           onClick={onClose}
           aria-label="Close modal"
