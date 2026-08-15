@@ -21,7 +21,18 @@ export default function TaskCard({ task, onOpen }) {
         : styles.badgeLow;
 
   return (
-    <div className={styles.card} onClick={() => onOpen(task.id)}>
+    <div
+      className={styles.card}
+      role="button"
+      tabIndex={0}
+      onClick={() => onOpen(task.id)}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          onOpen(task.id);
+        }
+      }}
+    >
       <div className={styles.title}>{task.title}</div>
       <span className={`${styles.badge} ${badgeClass}`}>{task.priority}</span>
       {task.dueDate && <div>{task.dueDate.slice(0, 10)}</div>}
