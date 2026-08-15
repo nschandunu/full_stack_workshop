@@ -1,5 +1,4 @@
 // @ts-check
-// @ts-ignore
 import styles from "./TaskModal.module.css";
 import { useEffect } from "react";
 import { TaskPriority } from "../../lib/types.jsx";
