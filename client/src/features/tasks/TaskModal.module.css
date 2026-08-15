@@ -40,6 +40,8 @@
   padding: 24px;
   max-width: 500px;
   width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
   box-sizing: border-box;
   animation: scaleIn 180ms ease forwards;
 }
