@@ -1,5 +1,4 @@
 // @ts-check
-// @ts-ignore
 import styles from "./TaskCard.module.css";
 import { TaskPriority } from "../../lib/types.jsx";
 
