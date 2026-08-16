@@ -1,287 +1,368 @@
 import { useEffect, useMemo, useState } from "react";
 import "./AdminProfile.css";
+import {
+  adminActivity,
+  adminProfile,
+  adminSettings,
+  adminStats,
+  adminUsers,
+  departments,
+  roleOptions,
+  timezones,
+} from "./mockAdminData";
+import ProfileHeader from "./components/ProfileHeader";
+import ProfileTabs from "./components/ProfileTabs";
+import OverviewTab from "./components/OverviewTab";
+import TeamManagementTab from "./components/TeamManagementTab";
+import ActivityTab from "./components/ActivityTab";
+import SettingsTab from "./components/SettingsTab";
+import InviteUserModal from "./components/InviteUserModal";
+import ConfirmActionModal from "./components/ConfirmActionModal";
+import EditableField from "./components/EditableField";
 
-const mockAdmin = {
-  name: "Ava Mercer",
-  username: "ava.mercer",
-  email: "ava@collabboard.app",
-  role: "admin",
-  avatarUrl: "",
-  memberSince: "2023-08-12",
+const emptyErrors = {
+  name: "",
+  email: "",
+  phone: "",
+  jobTitle: "",
+  department: "",
+  timezone: "",
 };
 
-const mockBoards = [
-  {
-    id: "admin-board-1",
-    title: "Enterprise Migration",
-    members: 14,
-    completed: 21,
-    inProgress: 8,
-    blocked: 2,
-    total: 31,
-    createdAt: "2025-01-18",
-    accent: "#dc2626",
-  },
-  {
-    id: "admin-board-2",
-    title: "Governance Review",
-    members: 9,
-    completed: 14,
-    inProgress: 5,
-    blocked: 1,
-    total: 20,
-    createdAt: "2025-04-05",
-    accent: "#ef4444",
-  },
-  {
-    id: "admin-board-3",
-    title: "Roadmap Alignment",
-    members: 18,
-    completed: 26,
-    inProgress: 9,
-    blocked: 3,
-    total: 38,
-    createdAt: "2025-09-12",
-    accent: "#f87171",
-  },
-];
-
-const totalUsers = 1024;
-const totalBoards = 87;
-
-const formatDate = (dateString) =>
-  new Intl.DateTimeFormat("en-GB", {
-    month: "long",
-    year: "numeric",
-  }).format(new Date(dateString));
-
-const initials = (name) =>
-  name
-    .split(" ")
-    .filter(Boolean)
-    .slice(0, 2)
-    .map((word) => word[0].toUpperCase())
-    .join("");
-
 export default function AdminProfile() {
-  const [profile, setProfile] = useState(mockAdmin);
-  const [draft, setDraft] = useState(mockAdmin);
-  const [avatarPreview, setAvatarPreview] = useState(mockAdmin.avatarUrl);
+  const [profile, setProfile] = useState(adminProfile);
+  const [draft, setDraft] = useState(adminProfile);
+  const [avatarPreview, setAvatarPreview] = useState(adminProfile.avatarUrl);
   const [isEditing, setIsEditing] = useState(false);
-  const [saved, setSaved] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [toast, setToast] = useState("");
+  const [activeTab, setActiveTab] = useState("Overview");
+  const [users, setUsers] = useState(adminUsers);
+  const [search, setSearch] = useState("");
+  const [roleFilter, setRoleFilter] = useState("All");
+  const [departmentFilter, setDepartmentFilter] = useState("All");
+  const [statusFilter, setStatusFilter] = useState("All");
+  const [inviteOpen, setInviteOpen] = useState(false);
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const [pendingUserId, setPendingUserId] = useState(null);
+  const [errors, setErrors] = useState(emptyErrors);
+  const [settings, setSettings] = useState(adminSettings);
 
   useEffect(() => {
-    if (!saved) return;
-    const timer = window.setTimeout(() => setSaved(false), 2500);
+    if (!toast) return undefined;
+    const timer = window.setTimeout(() => setToast(""), 2500);
     return () => window.clearTimeout(timer);
-  }, [saved]);
+  }, [toast]);
 
-  const totalTeamMembers = useMemo(
-    () => mockBoards.reduce((sum, board) => sum + board.members, 0),
-    [],
-  );
+  const filteredUsers = useMemo(() => {
+    const query = search.trim().toLowerCase();
+    return users.filter((user) => {
+      const matchesSearch =
+        !query ||
+        user.name.toLowerCase().includes(query) ||
+        user.email.toLowerCase().includes(query);
+      const matchesRole = roleFilter === "All" || user.role === roleFilter;
+      const matchesDepartment = departmentFilter === "All" || user.department === departmentFilter;
+      const matchesStatus = statusFilter === "All" || user.status === statusFilter;
 
-  const coverage = useMemo(
-    () => Math.round(mockBoards.reduce((sum, board) => sum + board.completed, 0) / mockBoards.reduce((sum, board) => sum + board.total, 0) * 100),
-    [],
-  );
+      return matchesSearch && matchesRole && matchesDepartment && matchesStatus;
+    });
+  }, [users, search, roleFilter, departmentFilter, statusFilter]);
 
-  const handleOpen = () => {
+  const validateProfile = (currentDraft = draft) => {
+    const nextErrors = { ...emptyErrors };
+
+    if (!currentDraft.name.trim()) nextErrors.name = "Full name is required.";
+    if (!currentDraft.email.trim()) {
+      nextErrors.email = "Email is required.";
+    } else if (!/\S+@\S+\.\S+/.test(currentDraft.email)) {
+      nextErrors.email = "Enter a valid email address.";
+    }
+    if (!currentDraft.phone.trim()) {
+      nextErrors.phone = "Phone number is required.";
+    } else if (!/^\+?[0-9()\-\s]{7,}$/.test(currentDraft.phone.trim())) {
+      nextErrors.phone = "Use a valid phone format.";
+    }
+    if (!currentDraft.jobTitle.trim()) nextErrors.jobTitle = "Job title is required.";
+    if (!currentDraft.department.trim()) nextErrors.department = "Department is required.";
+    if (!currentDraft.timezone.trim()) nextErrors.timezone = "Timezone is required.";
+
+    return nextErrors;
+  };
+
+  const handleEdit = () => {
     setDraft(profile);
     setAvatarPreview(profile.avatarUrl);
+    setErrors(emptyErrors);
     setIsEditing(true);
   };
 
-  const handleClose = () => {
+  const handleCancel = () => {
     setDraft(profile);
     setAvatarPreview(profile.avatarUrl);
+    setErrors(emptyErrors);
     setIsEditing(false);
   };
 
-  const handleChange = (event) => {
+  const handleFieldChange = (event) => {
     const { name, value } = event.target;
     setDraft((current) => ({ ...current, [name]: value }));
+    setErrors((current) => ({ ...current, [name]: "" }));
   };
 
-  const handleAvatarChange = (event) => {
-    const file = event.target.files?.[0];
-    if (!file) return;
-
-    const reader = new FileReader();
-    reader.onload = () => {
-      const url = reader.result?.toString() ?? "";
-      setAvatarPreview(url);
-      setDraft((current) => ({ ...current, avatarUrl: url }));
-    };
-    reader.readAsDataURL(file);
+  const handleAvatarChange = (nextValue) => {
+    setAvatarPreview(nextValue);
+    setDraft((current) => ({ ...current, avatarUrl: nextValue }));
   };
 
-  const handleSave = (event) => {
-    event.preventDefault();
-    setProfile((current) => ({ ...current, ...draft, avatarUrl: avatarPreview }));
-    setIsEditing(false);
-    setSaved(true);
+  const handleSave = () => {
+    const nextErrors = validateProfile();
+    setErrors(nextErrors);
+
+    if (Object.values(nextErrors).some(Boolean)) {
+      setToast("Please fix the highlighted fields.");
+      return;
+    }
+
+    setSaving(true);
+    setTimeout(() => {
+      setProfile({ ...draft, avatarUrl: avatarPreview || draft.avatarUrl });
+      setSaving(false);
+      setIsEditing(false);
+      setToast("Profile saved successfully.");
+    }, 900);
+  };
+
+  const toggleNotification = (key) => {
+    setSettings((current) => ({
+      ...current,
+      notifications: {
+        ...current.notifications,
+        [key]: !current.notifications[key],
+      },
+    }));
+  };
+
+  const togglePermission = (role) => {
+    setSettings((current) => ({
+      ...current,
+      permissions: {
+        ...current.permissions,
+        [role]: !current.permissions[role],
+      },
+    }));
+  };
+
+  const handleInviteSubmit = (value) => {
+    setUsers((current) => [
+      {
+        id: `u-${Date.now()}`,
+        name: value.name,
+        email: value.email,
+        role: value.role,
+        department: value.department,
+        status: value.status,
+        avatarUrl: "",
+      },
+      ...current,
+    ]);
+    setInviteOpen(false);
+    setToast("Invitation sent.");
+  };
+
+  const handleToggleStatus = (userId) => {
+    setUsers((current) =>
+      current.map((user) =>
+        user.id === userId
+          ? { ...user, status: user.status === "Active" ? "Inactive" : "Active" }
+          : user,
+      ),
+    );
+  };
+
+  const handleRemoveUser = () => {
+    setUsers((current) => current.filter((user) => user.id !== pendingUserId));
+    setConfirmOpen(false);
+    setPendingUserId(null);
+    setToast("User removed.");
+  };
+
+  const renderTabContent = () => {
+    switch (activeTab) {
+      case "Overview":
+        return <OverviewTab stats={adminStats} profile={profile} />;
+      case "Team Management":
+        return (
+          <TeamManagementTab
+            users={filteredUsers}
+            search={search}
+            setSearch={setSearch}
+            roleFilter={roleFilter}
+            setRoleFilter={setRoleFilter}
+            departmentFilter={departmentFilter}
+            setDepartmentFilter={setDepartmentFilter}
+            statusFilter={statusFilter}
+            setStatusFilter={setStatusFilter}
+            onInvite={() => setInviteOpen(true)}
+            onEditRole={(user) => {
+              const nextRole = window.prompt("Select a new role:", user.role);
+              if (!nextRole || !nextRole.trim()) return;
+              setUsers((current) =>
+                current.map((item) =>
+                  item.id === user.id ? { ...item, role: nextRole.trim() } : item,
+                ),
+              );
+              setToast("Role updated.");
+            }}
+            onToggleStatus={handleToggleStatus}
+            onRemove={(userId) => {
+              setPendingUserId(userId);
+              setConfirmOpen(true);
+            }}
+            roleOptions={roleOptions}
+            departments={departments}
+          />
+        );
+      case "Activity":
+        return <ActivityTab activities={adminActivity} />;
+      case "Settings":
+        return (
+          <SettingsTab
+            settings={settings}
+            onToggleNotification={toggleNotification}
+            onTogglePermission={togglePermission}
+            isSaving={saving}
+          />
+        );
+      default:
+        return null;
+    }
   };
 
   return (
     <main className="admin-profile-page">
-      <div className="admin-hero">
-        <div>
-          <p className="eyebrow">CollabBoard admin</p>
-          <h1>Admin control with clarity and confident oversight.</h1>
-          <p className="hero-copy">
-            The Admin Profile blends executive metrics with board ownership details, preserving the same refined CollabBoard system language as the other profile screens.
-          </p>
-        </div>
-        <div className="hero-mark">
-          <span />
-          <span />
-          <span />
+      <div className="page-shell">
+        <header className="page-kicker">Projects</header>
+        <h1 className="page-title">Admin Profile</h1>
+
+        <ProfileHeader
+          profile={profile}
+          isEditing={isEditing}
+          onEdit={handleEdit}
+          onSave={handleSave}
+          onCancel={handleCancel}
+          saving={saving}
+          onAvatarChange={handleAvatarChange}
+        />
+
+        <div className="profile-card">
+          <ProfileTabs activeTab={activeTab} onChange={setActiveTab} />
+
+          {isEditing && (
+            <section className="edit-panel">
+              <div className="edit-panel__header">
+                <h2>Profile details</h2>
+              </div>
+              <div className="edit-form-grid">
+                <EditableField
+                  label="Full name"
+                  name="name"
+                  value={draft.name}
+                  isEditing={isEditing}
+                  onChange={handleFieldChange}
+                  error={errors.name}
+                  required
+                />
+                <EditableField
+                  label="Email"
+                  name="email"
+                  type="email"
+                  value={draft.email}
+                  isEditing={isEditing}
+                  onChange={handleFieldChange}
+                  error={errors.email}
+                  required
+                />
+                <EditableField
+                  label="Phone"
+                  name="phone"
+                  type="tel"
+                  value={draft.phone}
+                  isEditing={isEditing}
+                  onChange={handleFieldChange}
+                  error={errors.phone}
+                  required
+                />
+                <EditableField
+                  label="Job title"
+                  name="jobTitle"
+                  value={draft.jobTitle}
+                  isEditing={isEditing}
+                  onChange={handleFieldChange}
+                  error={errors.jobTitle}
+                  required
+                />
+                <EditableField
+                  label="Department"
+                  name="department"
+                  value={draft.department}
+                  isEditing={isEditing}
+                  onChange={handleFieldChange}
+                  error={errors.department}
+                  as="select"
+                  options={departments}
+                  required
+                />
+                <EditableField
+                  label="Timezone"
+                  name="timezone"
+                  value={draft.timezone}
+                  isEditing={isEditing}
+                  onChange={handleFieldChange}
+                  error={errors.timezone}
+                  as="select"
+                  options={timezones}
+                  required
+                />
+                <div className="edit-form-grid__full">
+                  <EditableField
+                    label="Bio"
+                    name="bio"
+                    value={draft.bio}
+                    isEditing={isEditing}
+                    onChange={handleFieldChange}
+                    as="textarea"
+                    rows={4}
+                  />
+                </div>
+              </div>
+            </section>
+          )}
+
+          {!isEditing && renderTabContent()}
         </div>
       </div>
 
-      <section className="admin-card">
-        <div className="admin-top-row">
-          <div className="avatar-shell">
-            {avatarPreview ? (
-              <img className="avatar-img" src={avatarPreview} alt={`${profile.name} avatar`} />
-            ) : (
-              <div className="avatar-placeholder">{initials(profile.name)}</div>
-            )}
-          </div>
+      <InviteUserModal
+        isOpen={inviteOpen}
+        onClose={() => setInviteOpen(false)}
+        onSubmit={handleInviteSubmit}
+        roles={roleOptions}
+      />
 
-          <div className="admin-copy">
-            <span className="role-chip">Admin</span>
-            <h2>{profile.name}</h2>
-            <p className="meta mono">@{profile.username}</p>
-            <p className="meta">{profile.email}</p>
-            <p className="meta">Member since {formatDate(profile.memberSince)}</p>
-          </div>
+      <ConfirmActionModal
+        isOpen={confirmOpen}
+        title="Remove this user?"
+        message="This user will be permanently removed from the workspace team list."
+        confirmLabel="Remove user"
+        onConfirm={handleRemoveUser}
+        onCancel={() => {
+          setConfirmOpen(false);
+          setPendingUserId(null);
+        }}
+      />
 
-          <div className="admin-actions">
-            <button type="button" className="button button-secondary" onClick={handleOpen}>
-              Edit Profile
-            </button>
-            <button type="button" className="button button-tertiary">
-              Manage Roles
-            </button>
-          </div>
-        </div>
-
-        <div className="admin-stats-grid">
-          <article className="stat-card">
-            <p className="stat-label">System users</p>
-            <p className="stat-value">{totalUsers}</p>
-          </article>
-          <article className="stat-card">
-            <p className="stat-label">System boards</p>
-            <p className="stat-value">{totalBoards}</p>
-          </article>
-          <article className="stat-card">
-            <p className="stat-label">Team members</p>
-            <p className="stat-value">{totalTeamMembers}</p>
-          </article>
-          <article className="stat-card">
-            <p className="stat-label">Completion coverage</p>
-            <p className="stat-value">{coverage}%</p>
-          </article>
-        </div>
-      </section>
-
-      <section className="boards-panel">
-        <div className="boards-header">
-          <div>
-            <p className="eyebrow">Boards I Manage</p>
-            <h3>Your owned collaboration spaces</h3>
-          </div>
-          <p className="boards-copy">
-            Each board includes a quick status strip for tasks, plus the number of team members you oversee.
-          </p>
-        </div>
-
-        <div className="boards-list">
-          {mockBoards.map((board) => {
-            const progress = Math.round((board.completed / board.total) * 100);
-            return (
-              <article key={board.id} className="board-card">
-                <div className="board-head">
-                  <div className="board-accent" style={{ backgroundColor: board.accent }} />
-                  <div>
-                    <h4>{board.title}</h4>
-                    <p className="board-meta">Created {formatDate(board.createdAt)}</p>
-                  </div>
-                </div>
-
-                <div className="board-chips">
-                  <span>Members {board.members}</span>
-                  <span>Done {board.completed}</span>
-                  <span>Active {board.inProgress}</span>
-                  <span>Blocked {board.blocked}</span>
-                </div>
-
-                <div className="board-bar" aria-hidden="true">
-                  <div className="board-fill" style={{ width: `${progress}%`, backgroundColor: board.accent }} />
-                </div>
-                <div className="board-footer">
-                  <p className="mono">{progress}% complete</p>
-                  <p className="mono">{board.total} tasks</p>
-                </div>
-              </article>
-            );
-          })}
-        </div>
-      </section>
-
-      {isEditing ? (
-        <div className="modal-layer" role="dialog" aria-modal="true" aria-labelledby="admin-edit-heading">
-          <div className="modal-card">
-            <div className="modal-top">
-              <div>
-                <p className="eyebrow">Edit profile</p>
-                <h4 id="admin-edit-heading">Update admin details</h4>
-              </div>
-              <button type="button" className="close-btn" onClick={handleClose} aria-label="Close form">
-                ×
-              </button>
-            </div>
-            <form className="edit-form" onSubmit={handleSave}>
-              <div className="avatar-upload-section">
-                <div className="avatar-preview-shell">
-                  {avatarPreview ? (
-                    <img className="avatar-preview" src={avatarPreview} alt="Avatar preview" />
-                  ) : (
-                    <div className="avatar-preview fallback">{initials(draft.name)}</div>
-                  )}
-                </div>
-                <label className="upload-label">
-                  Upload new avatar
-                  <input type="file" accept="image/*" onChange={handleAvatarChange} />
-                </label>
-              </div>
-
-              <label className="input-row">
-                <span>Name</span>
-                <input name="name" value={draft.name} onChange={handleChange} required />
-              </label>
-              <label className="input-row">
-                <span>Email</span>
-                <input name="email" type="email" value={draft.email} onChange={handleChange} required />
-              </label>
-
-              <div className="modal-actions">
-                <button type="button" className="button button-ghost" onClick={handleClose}>
-                  Cancel
-                </button>
-                <button type="submit" className="button button-primary">
-                  Save changes
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      ) : null}
-
-      {saved ? <div className="save-toast">Profile updated</div> : null}
+      {toast && <div className="toast">{toast}</div>}
     </main>
   );
 }
