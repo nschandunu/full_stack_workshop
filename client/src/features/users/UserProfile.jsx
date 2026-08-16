@@ -1,276 +1,216 @@
-import { useEffect, useMemo, useState } from "react";
+import React, { useCallback, useRef, useState } from "react";
 import "./UserProfile.css";
 
-const mockProfile = {
-  name: "Lena Cross",
-  username: "lena.cross",
-  email: "lena@collabboard.app",
-  role: "member",
-  avatarUrl: "",
-  memberSince: "2024-02-18",
-};
+import { mockUser, mockStats, mockActivity, mockSettings, TIMEZONES, DEPARTMENTS } from "./mockData";
+import ProfileHeader from "./components/ProfileHeader";
+import ProfileTabs   from "./components/ProfileTabs";
+import OverviewTab   from "./components/OverviewTab";
+import ActivityTab   from "./components/ActivityTab";
+import SettingsTab   from "./components/SettingsTab";
+import EditableField from "./components/EditableField";
 
-const mockBoards = [
-  {
-    id: "board-1",
-    title: "Launch Campaign",
-    createdAt: "2025-01-10",
-    completed: 18,
-    inProgress: 5,
-    blocked: 1,
-    total: 24,
-    colors: ["#2563eb", "#4f46e5", "#0ea5e9"],
-  },
-  {
-    id: "board-2",
-    title: "Design Toolkit",
-    createdAt: "2025-05-02",
-    completed: 12,
-    inProgress: 6,
-    blocked: 2,
-    total: 20,
-    colors: ["#0ea5e9", "#38bdf8", "#6366f1"],
-  },
-  {
-    id: "board-3",
-    title: "Client Sprint",
-    createdAt: "2025-08-16",
-    completed: 10,
-    inProgress: 8,
-    blocked: 0,
-    total: 18,
-    colors: ["#4f46e5", "#7c3aed", "#c7d2fe"],
-  },
-];
+/* ── Validation ──────────────────────────────────────────────────────────── */
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const PHONE_RE = /^[\+\d\s\(\)\-]{7,20}$/;
 
-const formatDate = (dateString) =>
-  new Intl.DateTimeFormat("en-GB", {
-    month: "long",
-    year: "numeric",
-  }).format(new Date(dateString));
+function validateDraft(draft) {
+  const e = {};
+  if (!draft.name?.trim())     e.name     = "Name is required.";
+  if (!draft.jobTitle?.trim()) e.jobTitle = "Job title is required.";
+  if (draft.phone && !PHONE_RE.test(draft.phone))
+    e.phone = "Enter a valid phone number (7–20 digits).";
+  return e;
+}
 
-const initialsFromName = (name) =>
-  name
-    .split(" ")
-    .filter(Boolean)
-    .slice(0, 2)
-    .map((part) => part[0].toUpperCase())
-    .join("");
-
-export default function UserProfile() {
-  const [profile, setProfile] = useState(mockProfile);
-  const [draft, setDraft] = useState(mockProfile);
-  const [previewAvatar, setPreviewAvatar] = useState(mockProfile.avatarUrl);
+/* ── Component ───────────────────────────────────────────────────────────── */
+export default function UserProfile({ isReadOnly = false }) {
+  const [profile,   setProfile]   = useState({ ...mockUser });
+  const [draft,     setDraft]     = useState(null);
+  const [errors,    setErrors]    = useState({});
   const [isEditing, setIsEditing] = useState(false);
-  const [saved, setSaved] = useState(false);
+  const [saving,    setSaving]    = useState(false);
+  const [activeTab, setActiveTab] = useState("overview");
+  const [settings,  setSettings]  = useState({ ...mockSettings });
+  const [toast,     setToast]     = useState(null);
 
-  useEffect(() => {
-    if (!saved) return;
-    const timer = window.setTimeout(() => setSaved(false), 2400);
-    return () => window.clearTimeout(timer);
-  }, [saved]);
+  const toastTimer = useRef(null);
 
-  const totalCompleted = useMemo(
-    () => mockBoards.reduce((sum, board) => sum + board.completed, 0),
-    [],
-  );
+  /* ── Toast ── */
+  const showToast = useCallback((message, type = "success") => {
+    setToast({ message, type });
+    clearTimeout(toastTimer.current);
+    toastTimer.current = setTimeout(() => setToast(null), 3200);
+  }, []);
 
-  const totalTasks = useMemo(
-    () => mockBoards.reduce((sum, board) => sum + board.total, 0),
-    [],
-  );
-
-  const boardProgress = Math.round((totalCompleted / totalTasks) * 100);
-
-  const openEditor = () => {
-    setDraft(profile);
-    setPreviewAvatar(profile.avatarUrl);
+  /* ── Edit flow ── */
+  const openEdit = () => {
+    setDraft({ ...profile });
+    setErrors({});
     setIsEditing(true);
   };
 
-  const closeEditor = () => {
-    setDraft(profile);
-    setPreviewAvatar(profile.avatarUrl);
+  const cancelEdit = () => {
+    setDraft(null);
+    setErrors({});
     setIsEditing(false);
   };
 
-  const handleChange = (event) => {
-    const { name, value } = event.target;
-    setDraft((current) => ({ ...current, [name]: value }));
+  const handleDraftChange = (e) => {
+    const { name, value } = e.target;
+    setDraft((d) => ({ ...d, [name]: value }));
+    // Clear field error on change
+    if (errors[name]) setErrors((prev) => { const n = { ...prev }; delete n[name]; return n; });
   };
 
-  const handleAvatarUpload = (event) => {
-    const file = event.target.files?.[0];
-    if (!file) return;
+  const saveProfile = () => {
+    const errs = validateDraft(draft);
+    if (Object.keys(errs).length) { setErrors(errs); return; }
 
-    const reader = new FileReader();
-    reader.onload = () => {
-      const result = reader.result?.toString() ?? "";
-      setPreviewAvatar(result);
-      setDraft((current) => ({ ...current, avatarUrl: result }));
-    };
-    reader.readAsDataURL(file);
+    setSaving(true);
+    // Simulate network latency
+    setTimeout(() => {
+      setProfile({ ...draft });
+      setDraft(null);
+      setIsEditing(false);
+      setSaving(false);
+      showToast("Profile saved successfully!");
+    }, 1100);
   };
 
-  const saveProfile = (event) => {
-    event.preventDefault();
-    setProfile((current) => ({ ...current, ...draft, avatarUrl: previewAvatar }));
-    setIsEditing(false);
-    setSaved(true);
+  const handleAvatarChange = (dataUrl) => {
+    if (isEditing && draft) {
+      setDraft((d) => ({ ...d, avatarUrl: dataUrl }));
+    } else {
+      setProfile((p) => ({ ...p, avatarUrl: dataUrl }));
+    }
+    showToast("Photo updated!");
   };
 
+  const displayProfile = isEditing && draft ? draft : profile;
+
+  /* ── Render ── */
   return (
-    <div className="profile-page">
-      <header className="profile-hero">
-        <div className="hero-copy">
-          <p className="eyebrow">CollabBoard profile</p>
-          <h1>Keep your boards in motion with a more thoughtful profile.</h1>
-          <p className="hero-description">
-            This dashboard blends polished identity with board pulse visuals so the profile feels like part of the collaboration workflow,
-            not just an account page.
-          </p>
-        </div>
-        <div className="hero-signature" aria-hidden="true">
-          <div className="signature-ring" />
-          <div className="signature-bar signature-bar--one" />
-          <div className="signature-bar signature-bar--two" />
-          <div className="signature-dot" />
-        </div>
-      </header>
+    <div className="up-page">
+      <ProfileHeader
+        profile={displayProfile}
+        isEditing={isEditing}
+        isReadOnly={isReadOnly}
+        onEdit={openEdit}
+        onSave={saveProfile}
+        onCancel={cancelEdit}
+        saving={saving}
+        onAvatarChange={handleAvatarChange}
+      />
 
-      <section className="profile-card">
-        <div className="profile-top">
-          <div className="avatar-block">
-            {previewAvatar ? (
-              <img className="avatar-image" src={previewAvatar} alt={`${profile.name} avatar`} />
-            ) : (
-              <div className="avatar-fallback">{initialsFromName(profile.name)}</div>
+      <div className="up-layout">
+        {/* Edit panel — shown only during edit mode */}
+        {isEditing && (
+          <aside className="up-edit-panel" aria-label="Edit profile fields">
+            <div className="up-edit-panel-inner">
+              <p className="up-panel-eyebrow">Editing</p>
+              <h2 className="up-panel-title">Profile Details</h2>
+              <div className="up-panel-fields">
+                <EditableField
+                  label="Full name"
+                  name="name"
+                  value={draft.name}
+                  isEditing
+                  onChange={handleDraftChange}
+                  error={errors.name}
+                  required
+                />
+                <EditableField
+                  label="Job title"
+                  name="jobTitle"
+                  value={draft.jobTitle || ""}
+                  isEditing
+                  onChange={handleDraftChange}
+                  error={errors.jobTitle}
+                  required
+                />
+                <EditableField
+                  label="Department"
+                  name="department"
+                  value={draft.department || DEPARTMENTS[0]}
+                  isEditing
+                  onChange={handleDraftChange}
+                  as="select"
+                  options={DEPARTMENTS}
+                />
+                <EditableField
+                  label="Phone"
+                  name="phone"
+                  type="tel"
+                  value={draft.phone || ""}
+                  isEditing
+                  onChange={handleDraftChange}
+                  error={errors.phone}
+                  placeholder="+1 (555) 000-0000"
+                />
+                <EditableField
+                  label="Timezone"
+                  name="timezone"
+                  value={draft.timezone || TIMEZONES[0]}
+                  isEditing
+                  onChange={handleDraftChange}
+                  as="select"
+                  options={TIMEZONES}
+                />
+                <EditableField
+                  label="Bio"
+                  name="bio"
+                  value={draft.bio || ""}
+                  isEditing
+                  onChange={handleDraftChange}
+                  as="textarea"
+                  rows={4}
+                  placeholder="Tell your teammates a bit about yourself…"
+                />
+              </div>
+            </div>
+          </aside>
+        )}
+
+        {/* Main content */}
+        <main className="up-main" id="main-content">
+          <ProfileTabs active={activeTab} onChange={setActiveTab} />
+
+          <div className="up-tab-body">
+            {activeTab === "overview" && (
+              <OverviewTab
+                stats={mockStats}
+                profile={displayProfile}
+                loading={false}
+              />
+            )}
+            {activeTab === "activity" && (
+              <ActivityTab activity={mockActivity} loading={false} />
+            )}
+            {activeTab === "settings" && (
+              <SettingsTab
+                settings={settings}
+                onChange={setSettings}
+                isReadOnly={isReadOnly}
+              />
             )}
           </div>
-          <div className="profile-copy">
-            <span className="badge">User</span>
-            <h2>{profile.name}</h2>
-            <p className="meta-line username">@{profile.username}</p>
-            <p className="meta-line email">{profile.email}</p>
-            <p className="meta-line date">Member since {formatDate(profile.memberSince)}</p>
-          </div>
-          <button type="button" className="button button-edit" onClick={openEditor}>
-            Edit Profile
-          </button>
+        </main>
+      </div>
+
+      {/* Toast notification */}
+      {toast && (
+        <div
+          className={`up-toast up-toast--${toast.type}`}
+          role="status"
+          aria-live="polite"
+          aria-atomic="true"
+        >
+          <span className="up-toast-icon" aria-hidden="true">
+            {toast.type === "success" ? "✓" : "✕"}
+          </span>
+          {toast.message}
         </div>
-
-        <div className="profile-summary">
-          <div className="summary-item">
-            <p className="summary-label">Active boards</p>
-            <p className="summary-value">{mockBoards.length}</p>
-          </div>
-          <div className="summary-item">
-            <p className="summary-label">Tasks completed</p>
-            <p className="summary-value">{totalCompleted}</p>
-          </div>
-          <div className="summary-item">
-            <p className="summary-label">Completion pace</p>
-            <p className="summary-value monospace">{boardProgress}%</p>
-          </div>
-        </div>
-
-        <div className="progress-band" aria-hidden="true">
-          <div className="progress-fill" style={{ width: `${boardProgress}%` }} />
-        </div>
-      </section>
-
-      <section className="boards-section">
-        <div className="section-heading">
-          <div>
-            <p className="eyebrow">My Boards</p>
-            <h3>Boards that carry your collaboration momentum.</h3>
-          </div>
-          <p className="section-copy">
-            Each board includes a progress bar and task distribution so the section feels alive and useful instead of static.
-          </p>
-        </div>
-
-        <div className="boards-grid">
-          {mockBoards.map((board) => {
-            const progress = Math.round((board.completed / board.total) * 100);
-            return (
-              <article key={board.id} className="board-card">
-                <div className="board-title-row">
-                  <div className="board-pill" style={{ backgroundColor: board.colors[0] }} />
-                  <div>
-                    <p className="board-title">{board.title}</p>
-                    <p className="board-meta">Launched {formatDate(board.createdAt)}</p>
-                  </div>
-                </div>
-
-                <div className="board-chip-row">
-                  <span style={{ backgroundColor: board.colors[0] }}>Done {board.completed}</span>
-                  <span style={{ backgroundColor: board.colors[1] }}>Active {board.inProgress}</span>
-                  <span style={{ backgroundColor: board.colors[2] }}>Blocked {board.blocked}</span>
-                </div>
-
-                <div className="board-progress-meter">
-                  <div className="meter-track">
-                    <div className="meter-fill" style={{ width: `${progress}%`, background: board.colors[0] }} />
-                  </div>
-                  <p className="meter-label monospace">{progress}% complete</p>
-                </div>
-              </article>
-            );
-          })}
-        </div>
-      </section>
-
-      {isEditing ? (
-        <div className="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="edit-profile-heading">
-          <div className="modal-panel">
-            <div className="modal-header">
-              <div>
-                <p className="eyebrow">Edit profile</p>
-                <h4 id="edit-profile-heading">Update your display name and email</h4>
-              </div>
-              <button type="button" className="close-button" onClick={closeEditor} aria-label="Close edit form">
-                ×
-              </button>
-            </div>
-            <form className="editor-form" onSubmit={saveProfile}>
-              <div className="avatar-upload-row">
-                <div className="avatar-preview-shell">
-                  {previewAvatar ? (
-                    <img className="avatar-preview" src={previewAvatar} alt="Avatar preview" />
-                  ) : (
-                    <div className="avatar-preview fallback">{initialsFromName(draft.name)}</div>
-                  )}
-                </div>
-                <label className="file-input-label">
-                  Choose avatar
-                  <input type="file" accept="image/*" onChange={handleAvatarUpload} />
-                </label>
-              </div>
-
-              <label className="field-row">
-                <span>Name</span>
-                <input name="name" value={draft.name} onChange={handleChange} required />
-              </label>
-              <label className="field-row">
-                <span>Email</span>
-                <input name="email" type="email" value={draft.email} onChange={handleChange} required />
-              </label>
-
-              <div className="modal-actions">
-                <button type="button" className="button button-ghost" onClick={closeEditor}>
-                  Cancel
-                </button>
-                <button type="submit" className="button button-primary">
-                  Save changes
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      ) : null}
-
-      {saved ? <div className="toast">Profile saved successfully</div> : null}
+      )}
     </div>
   );
 }
