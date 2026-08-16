@@ -1,276 +1,274 @@
 import { useEffect, useMemo, useState } from "react";
 import "./PMProfile.css";
+import {
+  departments,
+  pmActivity,
+  pmProfile,
+  pmProjects,
+  pmSettings,
+  pmStats,
+  pmTeam,
+  timezones,
+} from "./mockPMData";
+import ProfileHeader from "./components/ProfileHeader";
+import ProfileTabs from "./components/ProfileTabs";
+import OverviewTab from "./components/OverviewTab";
+import MyProjectsTab from "./components/MyProjectsTab";
+import TeamTab from "./components/TeamTab";
+import ActivityTab from "./components/ActivityTab";
+import SettingsTab from "./components/SettingsTab";
+import EditableField from "./components/EditableField";
+import Toast from "./components/Toast";
 
-const mockProfile = {
-  name: "Noah Sinclair",
-  username: "noah.sinclair",
-  email: "noah@collabboard.app",
-  role: "project manager",
-  avatarUrl: "",
-  memberSince: "2024-06-04",
+const emptyErrors = {
+  name: "",
+  email: "",
+  phone: "",
+  jobTitle: "",
+  department: "",
+  timezone: "",
 };
 
-const mockBoards = [
-  {
-    id: "pm-board-1",
-    title: "Sprint Planning",
-    members: 12,
-    completed: 18,
-    inProgress: 6,
-    blocked: 2,
-    total: 26,
-    createdAt: "2025-02-14",
-    accent: "#7c3aed",
-  },
-  {
-    id: "pm-board-2",
-    title: "Release Review",
-    members: 8,
-    completed: 14,
-    inProgress: 4,
-    blocked: 3,
-    total: 21,
-    createdAt: "2025-05-20",
-    accent: "#a855f7",
-  },
-  {
-    id: "pm-board-3",
-    title: "Feature Refinement",
-    members: 10,
-    completed: 10,
-    inProgress: 9,
-    blocked: 1,
-    total: 20,
-    createdAt: "2025-10-08",
-    accent: "#c084fc",
-  },
-];
-
-const formatDate = (dateString) =>
-  new Intl.DateTimeFormat("en-GB", {
-    month: "long",
-    year: "numeric",
-  }).format(new Date(dateString));
-
-const initialsFromName = (name) =>
-  name
-    .split(" ")
-    .filter(Boolean)
-    .slice(0, 2)
-    .map((segment) => segment[0].toUpperCase())
-    .join("");
-
 export default function PMProfile() {
-  const [profile, setProfile] = useState(mockProfile);
-  const [draft, setDraft] = useState(mockProfile);
-  const [avatarPreview, setAvatarPreview] = useState(mockProfile.avatarUrl);
+  const [profile, setProfile] = useState(pmProfile);
+  const [draft, setDraft] = useState(pmProfile);
+  const [avatarPreview, setAvatarPreview] = useState(pmProfile.avatarUrl);
   const [isEditing, setIsEditing] = useState(false);
-  const [saved, setSaved] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [toast, setToast] = useState("");
+  const [activeTab, setActiveTab] = useState("Overview");
+  const [loadingTab, setLoadingTab] = useState(true);
+  const [projects] = useState(pmProjects);
+  const [team] = useState(pmTeam);
+  const [settings, setSettings] = useState(pmSettings);
+  const [errors, setErrors] = useState(emptyErrors);
 
   useEffect(() => {
-    if (!saved) return;
-    const timer = window.setTimeout(() => setSaved(false), 2400);
+    if (!toast) return undefined;
+    const timer = window.setTimeout(() => setToast(""), 2500);
     return () => window.clearTimeout(timer);
-  }, [saved]);
+  }, [toast]);
 
-  const totalTeamMembers = useMemo(
-    () => mockBoards.reduce((sum, board) => sum + board.members, 0),
-    [],
-  );
-
-  const totalCompleted = useMemo(
-    () => mockBoards.reduce((sum, board) => sum + board.completed, 0),
-    [],
-  );
+  useEffect(() => {
+    setLoadingTab(true);
+    const timer = window.setTimeout(() => setLoadingTab(false), 300);
+    return () => window.clearTimeout(timer);
+  }, [activeTab]);
 
   const totalTasks = useMemo(
-    () => mockBoards.reduce((sum, board) => sum + board.total, 0),
-    [],
+    () => projects.reduce((sum, project) => sum + Math.max(project.progress, 0), 0),
+    [projects],
   );
 
-  const completionRate = totalTasks > 0 ? Math.round((totalCompleted / totalTasks) * 100) : 0;
+  const validateProfile = (currentDraft = draft) => {
+    const nextErrors = { ...emptyErrors };
 
-  const openEditor = () => {
+    if (!currentDraft.name.trim()) nextErrors.name = "Full name is required.";
+    if (!currentDraft.email.trim()) {
+      nextErrors.email = "Email is required.";
+    } else if (!/\S+@\S+\.\S+/.test(currentDraft.email)) {
+      nextErrors.email = "Enter a valid email address.";
+    }
+    if (!currentDraft.phone.trim()) {
+      nextErrors.phone = "Phone number is required.";
+    } else if (!/^\+?[0-9()\-\s]{7,}$/.test(currentDraft.phone.trim())) {
+      nextErrors.phone = "Use a valid phone format.";
+    }
+    if (!currentDraft.jobTitle.trim()) nextErrors.jobTitle = "Job title is required.";
+    if (!currentDraft.department.trim()) nextErrors.department = "Department is required.";
+    if (!currentDraft.timezone.trim()) nextErrors.timezone = "Timezone is required.";
+
+    return nextErrors;
+  };
+
+  const handleEdit = () => {
     setDraft(profile);
     setAvatarPreview(profile.avatarUrl);
+    setErrors(emptyErrors);
     setIsEditing(true);
   };
 
-  const closeEditor = () => {
+  const handleCancel = () => {
     setDraft(profile);
     setAvatarPreview(profile.avatarUrl);
+    setErrors(emptyErrors);
     setIsEditing(false);
   };
 
-  const handleChange = (event) => {
+  const handleFieldChange = (event) => {
     const { name, value } = event.target;
     setDraft((current) => ({ ...current, [name]: value }));
+    setErrors((current) => ({ ...current, [name]: "" }));
   };
 
-  const handleAvatarUpload = (event) => {
-    const file = event.target.files?.[0];
-    if (!file) return;
-
-    const reader = new FileReader();
-    reader.onload = () => {
-      const src = reader.result?.toString() ?? "";
-      setAvatarPreview(src);
-      setDraft((current) => ({ ...current, avatarUrl: src }));
-    };
-    reader.readAsDataURL(file);
+  const handleAvatarChange = (nextValue) => {
+    setAvatarPreview(nextValue);
+    setDraft((current) => ({ ...current, avatarUrl: nextValue }));
   };
 
-  const handleSave = (event) => {
-    event.preventDefault();
-    setProfile((current) => ({ ...current, ...draft, avatarUrl: avatarPreview }));
-    setIsEditing(false);
-    setSaved(true);
+  const handleSave = () => {
+    const nextErrors = validateProfile();
+    setErrors(nextErrors);
+
+    if (Object.values(nextErrors).some(Boolean)) {
+      setToast("Please fix the highlighted fields.");
+      return;
+    }
+
+    setSaving(true);
+    setTimeout(() => {
+      setProfile({ ...draft, avatarUrl: avatarPreview || draft.avatarUrl });
+      setSaving(false);
+      setIsEditing(false);
+      setToast("Profile saved successfully.");
+    }, 900);
+  };
+
+  const toggleNotification = (key) => {
+    setSettings((current) => ({
+      ...current,
+      notifications: {
+        ...current.notifications,
+        [key]: !current.notifications[key],
+      },
+    }));
+  };
+
+  const renderSkeleton = () => (
+    <div className="pm-tab-panel pm-skeletons">
+      <div className="pm-skeleton-grid">
+        {Array.from({ length: 5 }).map((_, index) => (
+          <div key={index} className="pm-skeleton-card" />
+        ))}
+      </div>
+    </div>
+  );
+
+  const renderTabPanel = () => {
+    if (loadingTab) return renderSkeleton();
+
+    switch (activeTab) {
+      case "Overview":
+        return <OverviewTab stats={pmStats} />;
+      case "My Projects":
+        return <MyProjectsTab projects={projects} />;
+      case "Team":
+        return <TeamTab members={team} />;
+      case "Activity":
+        return <ActivityTab activity={pmActivity} />;
+      case "Settings":
+        return <SettingsTab settings={settings} onToggleNotification={toggleNotification} />;
+      default:
+        return null;
+    }
   };
 
   return (
     <main className="pm-profile-page">
-      <section className="pm-hero">
-        <div className="hero-copy">
-          <p className="eyebrow">Project Manager profile</p>
-          <h1>Strategic delivery with elegant visibility.</h1>
-          <p className="hero-text">
-            This profile brings the same CollabBoard system language as UserProfile, tuned for PM oversight with board ownership and team totals.
-          </p>
-        </div>
-        <div className="hero-mark" aria-hidden="true">
-          <span />
-          <span />
-          <span />
-        </div>
-      </section>
+      <div className="pm-page-shell">
+        <p className="pm-page-kicker">Projects</p>
+        <h1 className="pm-page-title">Project Manager Profile</h1>
 
-      <section className="pm-card">
-        <div className="pm-top-row">
-          <div className="avatar-wrap">
-            {avatarPreview ? (
-              <img className="avatar-img" src={avatarPreview} alt={`${profile.name} avatar`} />
-            ) : (
-              <div className="avatar-fallback">{initialsFromName(profile.name)}</div>
-            )}
-          </div>
-          <div className="pm-copy">
-            <span className="role-chip">Project Manager</span>
-            <h2>{profile.name}</h2>
-            <p className="meta mono">@{profile.username}</p>
-            <p className="meta">{profile.email}</p>
-            <p className="meta">Member since {formatDate(profile.memberSince)}</p>
-          </div>
-          <button type="button" className="button button-primary" onClick={openEditor}>
-            Edit Profile
-          </button>
-        </div>
+        <ProfileHeader
+          profile={profile}
+          isEditing={isEditing}
+          onEdit={handleEdit}
+          onSave={handleSave}
+          onCancel={handleCancel}
+          saving={saving}
+          onAvatarChange={handleAvatarChange}
+        />
 
-        <div className="pm-stats-row">
-          <article className="stat-card">
-            <p className="stat-label">Boards I manage</p>
-            <p className="stat-value">{mockBoards.length}</p>
-          </article>
-          <article className="stat-card">
-            <p className="stat-label">Team members</p>
-            <p className="stat-value">{totalTeamMembers}</p>
-          </article>
-          <article className="stat-card">
-            <p className="stat-label">Completion rate</p>
-            <p className="stat-value monospace">{completionRate}%</p>
-          </article>
-        </div>
-      </section>
+        <div className="pm-profile-card">
+          <ProfileTabs activeTab={activeTab} onChange={setActiveTab} />
 
-      <section className="boards-section">
-        <div className="section-intro">
-          <div>
-            <p className="eyebrow">Boards I Manage</p>
-            <h3>Current ownership and delivery focus.</h3>
-          </div>
-          <p className="section-copy">
-            Each board is rendered with a task status strip and member count for a dashboard-style PM view.
-          </p>
-        </div>
-
-        <div className="boards-grid">
-          {mockBoards.map((board) => {
-            const progress = board.total > 0 ? Math.round((board.completed / board.total) * 100) : 0;
-            return (
-              <article key={board.id} className="board-card">
-                <div className="board-header">
-                  <div className="board-indicator" style={{ backgroundColor: board.accent }} />
-                  <div>
-                    <h4>{board.title}</h4>
-                    <p className="board-meta">Created {formatDate(board.createdAt)}</p>
-                  </div>
-                </div>
-                <div className="board-tags">
-                  <span>Members {board.members}</span>
-                  <span>Done {board.completed}</span>
-                  <span>Active {board.inProgress}</span>
-                  <span>Blocked {board.blocked}</span>
-                </div>
-                <div className="board-track" aria-hidden="true">
-                  <div className="board-progress" style={{ width: `${progress}%`, backgroundColor: board.accent }} />
-                </div>
-                <div className="board-footer">
-                  <p className="mono">{progress}% complete</p>
-                  <p className="mono">{board.total} tasks</p>
-                </div>
-              </article>
-            );
-          })}
-        </div>
-      </section>
-
-      {isEditing ? (
-        <div className="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="pm-edit-heading">
-          <div className="modal-panel">
-            <div className="modal-header">
-              <div>
-                <p className="eyebrow">Edit profile</p>
-                <h4 id="pm-edit-heading">Update your profile details</h4>
+          {isEditing ? (
+            <section className="pm-edit-panel">
+              <div className="pm-edit-panel__title">
+                <h2>Project manager details</h2>
               </div>
-              <button type="button" className="close-button" onClick={closeEditor} aria-label="Close editor">
-                ×
-              </button>
-            </div>
-            <form className="edit-form" onSubmit={handleSave}>
-              <div className="avatar-edit-row">
-                <div className="avatar-preview-shell">
-                  {avatarPreview ? (
-                    <img className="avatar-preview" src={avatarPreview} alt="Avatar preview" />
-                  ) : (
-                    <div className="avatar-preview fallback">{initialsFromName(draft.name)}</div>
-                  )}
-                </div>
-                <label className="file-upload-label">
-                  Upload avatar
-                  <input type="file" accept="image/*" onChange={handleAvatarUpload} />
-                </label>
-              </div>
-              <label className="input-group">
-                <span>Name</span>
-                <input name="name" value={draft.name} onChange={handleChange} required />
-              </label>
-              <label className="input-group">
-                <span>Email</span>
-                <input name="email" type="email" value={draft.email} onChange={handleChange} required />
-              </label>
-              <div className="modal-actions">
-                <button type="button" className="button button-secondary" onClick={closeEditor}>
-                  Cancel
-                </button>
-                <button type="submit" className="button button-primary">
-                  Save changes
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      ) : null}
 
-      {saved ? <div className="toast-notice">Profile changes saved</div> : null}
+              <div className="pm-edit-form-grid">
+                <EditableField
+                  label="Full name"
+                  name="name"
+                  value={draft.name}
+                  isEditing={isEditing}
+                  onChange={handleFieldChange}
+                  error={errors.name}
+                  required
+                />
+                <EditableField
+                  label="Email"
+                  name="email"
+                  type="email"
+                  value={draft.email}
+                  isEditing={isEditing}
+                  onChange={handleFieldChange}
+                  error={errors.email}
+                  required
+                />
+                <EditableField
+                  label="Phone number"
+                  name="phone"
+                  type="tel"
+                  value={draft.phone}
+                  isEditing={isEditing}
+                  onChange={handleFieldChange}
+                  error={errors.phone}
+                  required
+                />
+                <EditableField
+                  label="Job title"
+                  name="jobTitle"
+                  value={draft.jobTitle}
+                  isEditing={isEditing}
+                  onChange={handleFieldChange}
+                  error={errors.jobTitle}
+                  required
+                />
+                <EditableField
+                  label="Department"
+                  name="department"
+                  value={draft.department}
+                  isEditing={isEditing}
+                  onChange={handleFieldChange}
+                  error={errors.department}
+                  as="select"
+                  options={departments}
+                  required
+                />
+                <EditableField
+                  label="Timezone"
+                  name="timezone"
+                  value={draft.timezone}
+                  isEditing={isEditing}
+                  onChange={handleFieldChange}
+                  error={errors.timezone}
+                  as="select"
+                  options={timezones}
+                  required
+                />
+                <div className="pm-edit-form-grid__full">
+                  <EditableField
+                    label="Bio"
+                    name="bio"
+                    value={draft.bio}
+                    isEditing={isEditing}
+                    onChange={handleFieldChange}
+                    as="textarea"
+                    rows={4}
+                  />
+                </div>
+              </div>
+            </section>
+          ) : (
+            renderTabPanel()
+          )}
+        </div>
+      </div>
+
+      {toast && <Toast message={toast} />}
     </main>
   );
 }
