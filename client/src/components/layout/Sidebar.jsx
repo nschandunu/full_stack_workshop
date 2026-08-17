@@ -4,7 +4,7 @@ const navItems = [
   { id: 'overview', label: 'Overview', href: '/features/projects/overview', icon: 'grid' },
   { id: 'kanban', label: 'Kanban', href: '/features/projects/kanban', icon: 'board' },
   { id: 'messages', label: 'Messages', href: '/features/projects/chat', icon: 'message', badge: true },
-  { id: 'team', label: 'Team', href: '#', icon: 'users' },
+  { id: 'team', label: 'Team', href: '#', icon: 'users', accent: true },
   { id: 'files', label: 'Files', href: '/features/projects/files', icon: 'folder' },
   { id: 'settings', label: 'Settings', href: '/features/projects/settings', icon: 'settings' },
 ];
@@ -103,7 +103,7 @@ function Sidebar({ activeRoute }) {
           return (
             <a
               key={item.id}
-              className={`sidebar__item${isActive ? ' sidebar__item--active' : ''}${isPlaceholder ? ' sidebar__item--ghost' : ''}`}
+              className={`sidebar__item${isActive ? ' sidebar__item--active' : ''}${isPlaceholder ? ' sidebar__item--ghost' : ''}${item.accent ? ' sidebar__item--accent' : ''}`}
               href={item.href}
               aria-label={item.label}
               aria-current={isActive ? 'page' : undefined}

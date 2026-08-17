@@ -69,6 +69,23 @@
   opacity: 0.92;
 }
 
+.sidebar__item--accent {
+  background: var(--color-accent);
+  border-color: var(--color-border);
+  color: var(--color-text-primary);
+  opacity: 1;
+}
+
+.sidebar__item--accent:hover,
+.sidebar__item--accent:focus-visible {
+  background: #e5ab00;
+}
+
+.sidebar__item--accent.sidebar__item--active {
+  background: #0f172a;
+  color: #ffffff;
+}
+
 .sidebar__icon {
   width: 18px;
   height: 18px;
