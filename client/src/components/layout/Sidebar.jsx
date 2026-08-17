@@ -3,7 +3,6 @@ import './sidebar.css';
 const navItems = [
   { id: 'overview', label: 'Overview', href: '/features/projects/overview', icon: 'grid' },
   { id: 'kanban', label: 'Kanban', href: '/features/projects/kanban', icon: 'board' },
-  { id: 'tasks', label: 'Tasks', href: '#', icon: 'checklist' },
   { id: 'messages', label: 'Messages', href: '/features/projects/chat', icon: 'message', badge: true },
   { id: 'team', label: 'Team', href: '#', icon: 'users' },
   { id: 'files', label: 'Files', href: '/features/projects/files', icon: 'folder' },
