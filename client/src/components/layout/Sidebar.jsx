@@ -6,7 +6,7 @@ const navItems = [
   { id: 'tasks', label: 'Tasks', href: '#', icon: 'checklist' },
   { id: 'layers', label: 'Projects', href: '#', icon: 'layers' },
   { id: 'notes', label: 'Notes', href: '#', icon: 'note' },
-  { id: 'messages', label: 'Messages', href: '#', icon: 'message', badge: true },
+  { id: 'messages', label: 'Messages', href: '/features/projects/chat', icon: 'message', badge: true },
   { id: 'team', label: 'Team', href: '#', icon: 'users' },
   { id: 'files', label: 'Files', href: '/features/projects/files', icon: 'folder' },
   { id: 'help', label: 'Help', href: '#', icon: 'help' },
