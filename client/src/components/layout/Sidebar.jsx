@@ -7,7 +7,6 @@ const navItems = [
   { id: 'messages', label: 'Messages', href: '/features/projects/chat', icon: 'message', badge: true },
   { id: 'team', label: 'Team', href: '#', icon: 'users' },
   { id: 'files', label: 'Files', href: '/features/projects/files', icon: 'folder' },
-  { id: 'help', label: 'Help', href: '#', icon: 'help' },
   { id: 'settings', label: 'Settings', href: '/features/projects/settings', icon: 'settings' },
 ];
 
