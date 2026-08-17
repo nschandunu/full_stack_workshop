@@ -2,6 +2,7 @@ import KanbanPage from './features/projects/kanban/pages/KanbanPage.jsx';
 import OverviewPage from './features/projects/pages/OverviewPage.jsx';
 import SettingsPage from './features/projects/pages/SettingsPage.jsx';
 import FilesPage from './features/projects/pages/FilesPage.jsx';
+import ChatPage from './features/projects/pages/ChatPage.jsx';
 import Sidebar from './components/layout/Sidebar.jsx';
 import './App.css';
 
@@ -11,6 +12,7 @@ function App() {
   const isOverviewRoute = pathname === '/features/projects/overview';
   const isSettingsRoute = pathname === '/features/projects/settings';
   const isFilesRoute = pathname === '/features/projects/files';
+  const isChatRoute = pathname === '/features/projects/chat';
 
   let pageContent = (
     <main className="app-shell__empty" style={{ padding: '2rem' }}>
@@ -41,6 +43,10 @@ function App() {
 
   if (isFilesRoute) {
     pageContent = <FilesPage />;
+  }
+
+  if (isChatRoute) {
+    pageContent = <ChatPage />;
   }
 
   return (
