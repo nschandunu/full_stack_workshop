@@ -11,6 +11,7 @@ import OverviewPage from '../features/projects/pages/OverviewPage';
 import SettingsPage from '../features/projects/pages/SettingsPage';
 import FilesPage from '../features/projects/pages/FilesPage';
 import ChatPage from '../features/projects/pages/ChatPage';
+import AnalyticsPage from '../features/projects/pages/AnalyticsPage';
 import TasksPage from '../features/tasks/TasksPage';
 import Sidebar from '../components/layout/Sidebar';
 import '../App.css';
@@ -44,6 +45,7 @@ export const AppRoutes = () => {
         <Route path="/features/projects/settings" element={<WorkspaceLayout><SettingsPage /></WorkspaceLayout>} />
         <Route path="/features/projects/files" element={<WorkspaceLayout><FilesPage /></WorkspaceLayout>} />
         <Route path="/features/projects/chat" element={<WorkspaceLayout><ChatPage /></WorkspaceLayout>} />
+        <Route path="/features/projects/analytics" element={<WorkspaceLayout><AnalyticsPage /></WorkspaceLayout>} />
         <Route path="/profiles/admin" element={<WorkspaceLayout><AdminProfile /></WorkspaceLayout>} />
         <Route path="/profiles/project-manager" element={<WorkspaceLayout><PMProfile /></WorkspaceLayout>} />
         <Route path="/profiles/user" element={<WorkspaceLayout><UserProfile /></WorkspaceLayout>} />

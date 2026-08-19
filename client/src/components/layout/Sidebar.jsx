@@ -4,6 +4,7 @@ const navItems = [
   { id: 'dashboard', label: 'Dashboard', href: '/dashboard', icon: 'grid' },
   { id: 'tasks', label: 'Tasks', href: '/tasks', icon: 'checklist' },
   { id: 'overview', label: 'Overview', href: '/features/projects/overview', icon: 'grid' },
+  { id: 'analytics', label: 'Analytics', href: '/features/projects/analytics', icon: 'chart' },
   { id: 'kanban', label: 'Kanban', href: '/features/projects/kanban', icon: 'board' },
   { id: 'messages', label: 'Messages', href: '/features/projects/chat', icon: 'message', badge: true },
   { id: 'team', label: 'Team', href: '/profiles/admin', icon: 'users', accent: true },
@@ -91,6 +92,14 @@ function Icon({ name }) {
         <svg viewBox="0 0 24 24" aria-hidden="true">
           <circle cx="12" cy="12" r="3.2" />
           <path d="M19 12l1.8-1-1.5-2.6-2 .3-.9-1.1.6-1.9-2.6-1.5-1 1.7h-1.3l-1-1.7-2.6 1.5.6 1.9-.9 1.1-2-.3L3 11l1.8 1L3 13l1.5 2.6 2-.3.9 1.1-.6 1.9 2.6 1.5 1-1.7h1.3l1 1.7 2.6-1.5-.6-1.9.9-1.1 2 .3L20.8 13z" />
+        </svg>
+      );
+    case 'chart':
+      return (
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M4 20V10h4v10" />
+          <path d="M10 20V4h4v16" />
+          <path d="M16 20v-8h4v8" />
         </svg>
       );
     default:
