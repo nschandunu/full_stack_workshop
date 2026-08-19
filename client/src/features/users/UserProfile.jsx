@@ -1,4 +1,5 @@
-import React, { useCallback, useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
+import { Link } from "react-router-dom";
 import "./UserProfile.css";
 
 import { mockUser, mockStats, mockActivity, mockSettings, TIMEZONES, DEPARTMENTS } from "./mockData";
@@ -10,8 +11,7 @@ import SettingsTab   from "./components/SettingsTab";
 import EditableField from "./components/EditableField";
 
 /* ── Validation ──────────────────────────────────────────────────────────── */
-const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-const PHONE_RE = /^[\+\d\s\(\)\-]{7,20}$/;
+const PHONE_RE = /^[+\d\s()-]{7,20}$/;
 
 function validateDraft(draft) {
   const e = {};
@@ -91,6 +91,12 @@ export default function UserProfile({ isReadOnly = false }) {
   /* ── Render ── */
   return (
     <div className="up-page">
+      <nav className="up-profile-switcher" aria-label="Switch profile">
+        <span>Other profiles</span>
+        <Link to="/profiles/project-manager">Manager profile</Link>
+        <Link to="/profiles/admin">Admin profile</Link>
+      </nav>
+
       <ProfileHeader
         profile={displayProfile}
         isEditing={isEditing}
