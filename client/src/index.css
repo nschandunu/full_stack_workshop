@@ -4,6 +4,20 @@
   font-weight: 400;
   color: #171717;
   background: #f4f3f1;
+@import './styles/theme.css';
+
+html,
+body,
+#root {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  background: var(--color-bg);
+  color: var(--color-text-primary);
+  font: 18px/145% var(--sans, system-ui, 'Segoe UI', Roboto, sans-serif);
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -360,6 +374,7 @@ textarea {
   min-width: 110px;
   padding-right: 20px;
   border-right: 2px solid var(--border);
+  box-sizing: border-box;
 }
 
 img {
@@ -370,6 +385,14 @@ img {
   font-weight: 700;
   color: var(--text-muted);
   text-transform: uppercase;
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--heading, system-ui, 'Segoe UI', Roboto, sans-serif);
+  color: var(--color-text-primary);
 }
 
 #root {
@@ -451,9 +474,11 @@ img {
 }
 
 .activity-content p {
+p {
   margin: 0;
   font-size: 14px;
   line-height: 1.5;
+  color: var(--color-text-secondary);
 }
 
 button {
@@ -463,6 +488,8 @@ button {
   margin-top: 3px;
   color: var(--text-muted);
   font-size: 12px;
+a {
+  color: inherit;
 }
 
 h1, h2, h3, h4, p {
@@ -497,6 +524,12 @@ h1, h2, h3, h4, p {
   margin: 0;
   font-size: 15px;
   font-weight: 900;
+code {
+  font-family: var(--mono, ui-monospace, Consolas, monospace);
+  background: #ffffff;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: 0.1rem 0.35rem;
 }
 
 .project-progress-info p {

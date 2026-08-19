@@ -14,14 +14,32 @@ input,
 select,
 textarea {
   font: inherit;
+@import './styles/theme.css';
+
+.app-shell {
+  min-height: 100svh;
+  display: flex;
+  background: var(--color-bg);
 }
 
 img {
   display: block;
   max-width: 100%;
+.app-shell__content {
+  flex: 1;
+  min-width: 0;
+  background: var(--color-bg);
 }
 
 a {
   color: inherit;
+.app-shell__empty {
+  min-height: 100svh;
 }
 
+
+@media (max-width: 780px) {
+  .app-shell {
+    align-items: stretch;
+  }
+}
