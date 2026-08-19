@@ -1,4 +1,15 @@
 :root {
+  font-family: Inter, "Segoe UI", Roboto, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  color: #171717;
+  background: #f4f3f1;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  color-scheme: light;
+}
   font-family: Arial, Helvetica, sans-serif;
   color: #111111;
   background: #f1f2f4;
@@ -34,6 +45,8 @@ body {
   color: var(--text);
 }
 
+* {
+  box-sizing: border-box;
 button,
 input,
 textarea,
@@ -41,6 +54,8 @@ select {
   font: inherit;
 }
 
+html {
+  scroll-behavior: smooth;
 button {
   color: inherit;
 }
@@ -158,10 +173,18 @@ button {
 
 .section-header h2 {
   margin: 0;
+  min-width: 320px;
+  background: #f4f3f1;
+  color: #171717;
   font-size: 22px;
   font-weight: 900;
 }
 
+button,
+input,
+select,
+textarea {
+  font: inherit;
 #root {
   width: 100%;
   max-width: 100%;
@@ -339,6 +362,9 @@ button {
   border-right: 2px solid var(--border);
 }
 
+img {
+  max-width: 100%;
+  display: block;
 .deadline-date span {
   font-size: 11px;
   font-weight: 700;
@@ -346,6 +372,8 @@ button {
   text-transform: uppercase;
 }
 
+#root {
+  min-height: 100vh;
 .deadline-date strong {
   margin-top: 4px;
   font-size: 14px;
@@ -428,6 +456,8 @@ button {
   line-height: 1.5;
 }
 
+button {
+  cursor: pointer;
 .activity-content span {
   display: block;
   margin-top: 3px;
@@ -435,6 +465,8 @@ button {
   font-size: 12px;
 }
 
+h1, h2, h3, h4, p {
+  margin: 0;
 /* Project Progress */
 
 .project-progress {
