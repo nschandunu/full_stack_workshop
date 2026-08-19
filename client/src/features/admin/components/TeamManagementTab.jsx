@@ -1,3 +1,5 @@
+import UserTable from './UserTable';
+
 export default function TeamManagementTab({
   users,
   search,
