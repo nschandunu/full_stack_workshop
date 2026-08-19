@@ -162,6 +162,12 @@ button {
   font-weight: 900;
 }
 
+#root {
+  width: 100%;
+  max-width: 100%;
+  margin: 0 auto;
+  text-align: left;
+  min-height: 100svh;
 .section-action {
   border: 2px solid var(--border);
   background: var(--surface);
