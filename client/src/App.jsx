@@ -10,6 +10,8 @@ import './App.css';
 import DashboardPage from "./features/dashboard/pages/DashboardPage";
 import UserProfile from "./features/users/UserProfile";
 import "./App.css";
+import React from 'react';
+import AppRoutes from './routes/AppRoutes';
 
 function App() {
   return <AdminProfile />;
@@ -67,6 +69,7 @@ function App() {
       <div className="app-shell__content">{pageContent}</div>
     </div>
   );
+  return <AppRoutes />;
 }
 
 export default App;
