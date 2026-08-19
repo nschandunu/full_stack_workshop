@@ -7,6 +7,13 @@
   font-weight: 400;
   color: #171717;
   background: #f4f3f1;
+  --bg: var(--color-bg);
+  --surface: var(--color-surface);
+  --border: var(--color-border);
+  --muted: var(--color-priority-neutral);
+  --primary: var(--color-accent);
+  --text: var(--color-text-primary);
+  --text-muted: var(--color-text-secondary);
 }
 
 html,
@@ -438,17 +445,14 @@ h6 {
   align-items: center;
   gap: 14px;
   padding: 16px;
+  border-bottom: 2px solid var(--border);
 }
-
-p {
 
 .activity-item:last-child {
   border-bottom: none;
 }
 
 .activity-avatar {
-}
-
   display: flex;
   align-items: center;
   justify-content: center;

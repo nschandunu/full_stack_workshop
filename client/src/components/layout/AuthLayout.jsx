@@ -1,17 +1,17 @@
-import React from 'react';
 import { Layers } from 'lucide-react';
 import Badge from '../ui/Badge';
+import './auth-layout.css';
 
 export const AuthLayout = ({ children }) => {
   return (
-    <div className="min-h-screen w-full bg-[#EEF1F3] flex flex-col justify-between items-center px-4 py-8 sm:py-12 selection:bg-[#F5B400] selection:text-black">
+    <div className="auth-shell">
       {/* Top Bar / Brand header */}
-      <header className="w-full max-w-[440px] flex items-center justify-between mb-6 sm:mb-8">
-        <div className="flex items-center space-x-2.5">
-          <div className="w-9 h-9 bg-black flex items-center justify-center border-2 border-black">
-            <Layers className="w-5 h-5 text-[#F5B400]" />
+      <header className="auth-header">
+        <div className="auth-brand">
+          <div className="auth-brand-mark">
+            <Layers aria-hidden="true" />
           </div>
-          <span className="text-xl font-black tracking-tight text-black uppercase">
+          <span className="auth-brand-name">
             PLANR<span className="text-[#6B7280]">.SYS</span>
           </span>
         </div>
@@ -19,13 +19,13 @@ export const AuthLayout = ({ children }) => {
       </header>
 
       {/* Main Content Area */}
-      <main className="w-full max-w-[440px] my-auto">
+      <main className="auth-main">
         {children}
       </main>
 
       {/* Bottom Footer Info */}
-      <footer className="w-full max-w-[440px] mt-8 text-center text-xs font-semibold text-[#6B7280]">
-        <div className="flex items-center justify-center space-x-4">
+      <footer className="auth-footer">
+        <div className="auth-footer-links">
           <span className="hover:text-black transition-colors cursor-pointer">Security</span>
           <span>•</span>
           <span className="hover:text-black transition-colors cursor-pointer">Privacy</span>

@@ -1,0 +1,97 @@
+.auth-shell {
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 32px 24px 24px;
+  background: #eef1f3;
+  color: #000;
+}
+
+.auth-header,
+.auth-main,
+.auth-footer {
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.auth-header {
+  max-width: 920px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.auth-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.auth-brand-mark {
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  border: 2px solid #000;
+  background: #000;
+}
+
+.auth-brand-mark svg {
+  width: 22px;
+  height: 22px;
+  color: #f5b400;
+}
+
+.auth-brand-name {
+  color: #000;
+  font-size: 23px;
+  font-weight: 900;
+  letter-spacing: -0.04em;
+}
+
+.auth-main {
+  max-width: 520px;
+  margin-top: clamp(48px, 10vh, 104px);
+  margin-bottom: auto;
+}
+
+.auth-footer {
+  max-width: 920px;
+  margin-top: 56px;
+  color: #6b7280;
+  font-size: 12px;
+  font-weight: 600;
+  text-align: center;
+}
+
+.auth-footer-links {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+}
+
+@media (max-width: 600px) {
+  .auth-shell {
+    padding: 24px 16px 20px;
+  }
+
+  .auth-brand-name {
+    font-size: 20px;
+  }
+
+  .auth-main {
+    margin-top: 56px;
+  }
+
+  .auth-footer {
+    margin-top: 40px;
+  }
+
+  .auth-footer-links {
+    gap: 10px;
+  }
+}

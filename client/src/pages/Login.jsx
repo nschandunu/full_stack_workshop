@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { Eye, EyeOff, ArrowRight, CheckCircle2 } from 'lucide-react';
+import { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { Eye, EyeOff, ArrowRight } from 'lucide-react';
 import Card from '../components/ui/Card';
 import Input from '../components/ui/Input';
 import Button from '../components/ui/Button';
 import { MOCK_USER } from '../data/mockData';
+import './login.css';
 
 /**
  * Login Page Component
@@ -17,27 +18,25 @@ export const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [submittedData, setSubmittedData] = useState(null);
+  const [error, setError] = useState('');
+  const navigate = useNavigate();
 
   const handleSubmit = (e) => {
     e.preventDefault();
     setIsLoading(true);
-    setSubmittedData(null);
+    setError('');
+    if (!email.trim() || !password) {
+      setError('Enter your email and password to continue.');
+      return;
+    }
 
-    const formData = {
-      email,
-      password: '•'.repeat(password.length),
-      rememberMe,
-      timestamp: new Date().toISOString(),
-    };
-
-    // Log the form values as requested (FRONTEND-ONLY placeholder logic)
-    console.log('[LOGIN SUBMITTED - FRONTEND ONLY]:', formData);
-
-    // Simulated short loading state for high quality UX feedback
     setTimeout(() => {
       setIsLoading(false);
-      setSubmittedData(formData);
+      localStorage.setItem(
+        'planr-demo-session',
+        JSON.stringify({ email: email.trim(), rememberMe }),
+      );
+      navigate('/dashboard', { replace: true });
     }, 600);
   };
 
@@ -48,9 +47,9 @@ export const Login = () => {
   };
 
   return (
-    <div className="w-full">
+    <div className="login-page">
       {/* Header Section */}
-      <div className="mb-6 text-left">
+      <div className="login-intro">
         <p className="text-xs font-extrabold uppercase tracking-widest text-[#6B7280] mb-2">
           Welcome back
         </p>
@@ -63,7 +62,7 @@ export const Login = () => {
       </div>
 
       {/* Main Login Card */}
-      <Card className="w-full">
+      <Card className="login-card">
         <form onSubmit={handleSubmit} className="space-y-5" noValidate={false}>
           {/* Email Field */}
           <Input
@@ -156,24 +155,10 @@ export const Login = () => {
         </div>
       </Card>
 
-      {/* Simulated Submission Notification */}
-      {submittedData && (
-        <div className="mt-4 p-4 bg-white border-2 border-black flex items-start space-x-3 text-left animate-in fade-in slide-in-from-top-2">
-          <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0 mt-0.5" />
-          <div className="text-xs">
-            <p className="font-bold text-black uppercase tracking-wide">
-              Login Form Submitted (Logged to Console)
-            </p>
-            <p className="text-[#6B7280] mt-0.5">
-              Account: <strong className="text-black">{submittedData.email}</strong> • Remember:{' '}
-              {submittedData.rememberMe ? 'Yes' : 'No'}
-            </p>
-          </div>
-        </div>
-      )}
+        {error && <p className="login-error" role="alert">{error}</p>}
 
       {/* Footer link below card */}
-      <div className="mt-6 text-center">
+      <div className="login-signup">
         <p className="text-sm font-medium text-[#6B7280]">
           Don't have an account?{' '}
           <Link

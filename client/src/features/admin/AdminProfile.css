@@ -670,6 +670,8 @@
     flex: 1;
   }
 }
+
+.modal-top {
   gap: 18px;
   align-items: flex-start;
 }
