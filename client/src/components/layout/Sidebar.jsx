@@ -2,10 +2,12 @@ import './sidebar.css';
 
 const navItems = [
   { id: 'dashboard', label: 'Dashboard', href: '/dashboard', icon: 'grid' },
+  { id: 'tasks', label: 'Tasks', href: '/tasks', icon: 'checklist' },
   { id: 'overview', label: 'Overview', href: '/features/projects/overview', icon: 'grid' },
   { id: 'kanban', label: 'Kanban', href: '/features/projects/kanban', icon: 'board' },
   { id: 'messages', label: 'Messages', href: '/features/projects/chat', icon: 'message', badge: true },
   { id: 'team', label: 'Team', href: '/profiles/admin', icon: 'users', accent: true },
+  { id: 'profile', label: 'Profile', href: '/profiles/user', icon: 'profile' },
   { id: 'files', label: 'Files', href: '/features/projects/files', icon: 'folder' },
   { id: 'settings', label: 'Settings', href: '/features/projects/settings', icon: 'settings' },
 ];
@@ -62,6 +64,13 @@ function Icon({ name }) {
           <path d="M16 11a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5z" />
           <path d="M3.5 19c.9-2.8 3-4.5 4.5-4.5S11.6 16.2 12.5 19" />
           <path d="M13.5 19c.6-2.1 2.2-3.5 3.7-3.5 1.7 0 3 1.1 3.3 3" />
+        </svg>
+      );
+    case 'profile':
+      return (
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="12" cy="8" r="3.2" />
+          <path d="M5 20c.8-3.3 3.1-5 7-5s6.2 1.7 7 5" />
         </svg>
       );
     case 'folder':

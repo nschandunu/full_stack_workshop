@@ -11,6 +11,7 @@ import OverviewPage from '../features/projects/pages/OverviewPage';
 import SettingsPage from '../features/projects/pages/SettingsPage';
 import FilesPage from '../features/projects/pages/FilesPage';
 import ChatPage from '../features/projects/pages/ChatPage';
+import TasksPage from '../features/tasks/TasksPage';
 import Sidebar from '../components/layout/Sidebar';
 import '../App.css';
 
@@ -37,6 +38,7 @@ export const AppRoutes = () => {
           element={<AuthLayout><Register /></AuthLayout>}
         />
         <Route path="/dashboard" element={<WorkspaceLayout><DashboardPage /></WorkspaceLayout>} />
+        <Route path="/tasks" element={<WorkspaceLayout><TasksPage /></WorkspaceLayout>} />
         <Route path="/features/projects/overview" element={<WorkspaceLayout><OverviewPage /></WorkspaceLayout>} />
         <Route path="/features/projects/kanban" element={<WorkspaceLayout><KanbanPage /></WorkspaceLayout>} />
         <Route path="/features/projects/settings" element={<WorkspaceLayout><SettingsPage /></WorkspaceLayout>} />
