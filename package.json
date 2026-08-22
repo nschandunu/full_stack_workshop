@@ -1,0 +1,29 @@
+{
+  "name": "full_stack_web",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "cd client && npm run dev --",
+    "build": "npm --prefix client run build",
+    "lint": "npm --prefix client run lint",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nschandunu/full_stack_workshop.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/nschandunu/full_stack_workshop/issues"
+  },
+  "homepage": "https://github.com/nschandunu/full_stack_workshop#readme",
+  "devDependencies": {
+    "prettier": "^3.9.6"
+  }
+}
