@@ -1,16 +1,49 @@
-# React + Vite
+# CollabBoard — Frontend README
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Overview
 
-Currently, two official plugins are available:
+This folder contains the React frontend for CollabBoard, a Kanban-style task board app.
+It is part of a larger full-stack project built progressively across a 5-session workshop.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Folder Structure
 
-## React Compiler
+```text
+src/
+  components/
+	 Board.jsx
+	 Column.jsx
+	 TaskCard.jsx
+	 AddTaskForm.jsx
+	 BoardHeader.jsx
+  App.jsx
+  index.js
+public/
+package.json
+```
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Getting Started
 
-## Expanding the ESLint configuration
+1. Install dependencies:
+	`npm install`
+2. Start the local development server:
+	`npm start`
+3. Run tests (Jest + React Testing Library):
+	`npm test`
+4. Build for production:
+	`npm run build`
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Available Scripts
+
+| Script | Command | Description |
+| --- | --- | --- |
+| Install dependencies | `npm install` | Installs project dependencies required to run the frontend. |
+| Start development server | `npm start` | Runs the frontend locally in development mode. |
+| Run test suite | `npm test` | Executes Jest + React Testing Library tests. |
+| Build production bundle | `npm run build` | Creates an optimized production build. |
+
+## Notes
+
+- This is the Session 1 frontend milestone for the Group Project Brief.
+- Backend integration will be added in later sessions.
+- Authentication will be added in later sessions.
+- Real-time updates will be added in later sessions.

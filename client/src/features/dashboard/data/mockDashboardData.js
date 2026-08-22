@@ -1,0 +1,118 @@
+export const dashboardData = {
+  stats: {
+    totalProjects: 12,
+    activeProjects: 7,
+    completedProjects: 4,
+    overdueTasks: 3,
+  },
+
+  projects: [
+    {
+      id: 1,
+      name: "Project Management Platform",
+      owner: "Senuka",
+      tasks: 18,
+      completedTasks: 12,
+      status: "Active",
+      progress: 67,
+    },
+    {
+      id: 2,
+      name: "Mobile Application",
+      owner: "Kasun",
+      tasks: 24,
+      completedTasks: 10,
+      status: "Active",
+      progress: 42,
+    },
+    {
+      id: 3,
+      name: "Marketing Website",
+      owner: "Amal",
+      tasks: 15,
+      completedTasks: 15,
+      status: "Completed",
+      progress: 100,
+    },
+  ],
+
+  tasks: [
+    {
+      id: 1,
+      title: "Implement authentication",
+      project: "Project Management Platform",
+      dueDate: "2026-08-10",
+      priority: "High",
+      status: "In Progress",
+    },
+    {
+      id: 2,
+      title: "Create project API",
+      project: "Project Management Platform",
+      dueDate: "2026-08-12",
+      priority: "Medium",
+      status: "Todo",
+    },
+    {
+      id: 3,
+      title: "Design mobile dashboard",
+      project: "Mobile Application",
+      dueDate: "2026-08-15",
+      priority: "Low",
+      status: "Todo",
+    },
+  ],
+  activities: [
+  {
+    id: 1,
+    user: "Senuka",
+    action: "created a new task",
+    target: "Implement authentication",
+    time: "10 minutes ago",
+  },
+  {
+    id: 2,
+    user: "Kasun",
+    action: "updated project status",
+    target: "Mobile Application",
+    time: "1 hour ago",
+  },
+  {
+    id: 3,
+    user: "Amal",
+    action: "completed a task",
+    target: "Marketing Website",
+    time: "3 hours ago",
+  },
+  {
+    id: 4,
+    user: "Senuka",
+    action: "created a project",
+    target: "Project Management Platform",
+    time: "Yesterday",
+  },
+  ],
+  notifications: [
+  {
+    id: 1,
+    type: "warning",
+    title: "Overdue task",
+    message: "Implement authentication is overdue.",
+    time: "10 min ago",
+  },
+  {
+    id: 2,
+    type: "info",
+    title: "Project updated",
+    message: "Mobile Application progress was updated.",
+    time: "1 hour ago",
+  },
+  {
+    id: 3,
+    type: "success",
+    title: "Task completed",
+    message: "Marketing Website task was completed.",
+    time: "3 hours ago",
+  },
+  ],
+};
