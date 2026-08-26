@@ -10,6 +10,7 @@ import {
   roleOptions,
   timezones,
 } from "./mockAdminData";
+import { useAuth } from "../../context/AuthContext";
 import ProfileHeader from "./components/ProfileHeader";
 import ProfileTabs from "./components/ProfileTabs";
 import OverviewTab from "./components/OverviewTab";
@@ -30,8 +31,10 @@ const emptyErrors = {
 };
 
 export default function AdminProfile() {
-  const [profile, setProfile] = useState(adminProfile);
-  const [draft, setDraft] = useState(adminProfile);
+  const { user: authUser } = useAuth();
+  const initialProfile = { ...adminProfile, name: authUser?.name ?? adminProfile.name, email: authUser?.email ?? adminProfile.email };
+  const [profile, setProfile] = useState(initialProfile);
+  const [draft, setDraft] = useState(initialProfile);
   const [avatarPreview, setAvatarPreview] = useState(adminProfile.avatarUrl);
   const [isEditing, setIsEditing] = useState(false);
   const [saving, setSaving] = useState(false);

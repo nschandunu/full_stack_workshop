@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import "./UserProfile.css";
 
 import { mockUser, mockStats, mockActivity, mockSettings, TIMEZONES, DEPARTMENTS } from "./mockData";
+import { useAuth } from "../../context/AuthContext";
 import ProfileHeader from "./components/ProfileHeader";
 import ProfileTabs   from "./components/ProfileTabs";
 import OverviewTab   from "./components/OverviewTab";
@@ -24,7 +25,8 @@ function validateDraft(draft) {
 
 /* ── Component ───────────────────────────────────────────────────────────── */
 export default function UserProfile({ isReadOnly = false }) {
-  const [profile,   setProfile]   = useState({ ...mockUser });
+  const { user: authUser } = useAuth();
+  const [profile,   setProfile]   = useState({ ...mockUser, name: authUser?.name ?? mockUser.name, email: authUser?.email ?? mockUser.email });
   const [draft,     setDraft]     = useState(null);
   const [errors,    setErrors]    = useState({});
   const [isEditing, setIsEditing] = useState(false);
