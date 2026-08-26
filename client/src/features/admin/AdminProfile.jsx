@@ -32,7 +32,17 @@ const emptyErrors = {
 
 export default function AdminProfile() {
   const { user: authUser } = useAuth();
-  const initialProfile = { ...adminProfile, name: authUser?.name ?? adminProfile.name, email: authUser?.email ?? adminProfile.email };
+  const initialProfile = {
+    ...adminProfile,
+    name:       authUser?.name  ?? '',
+    email:      authUser?.email ?? '',
+    username:   authUser?.email?.split('@')[0] ?? '',
+    phone:      '',
+    location:   '',
+    jobTitle:   '',
+    bio:        '',
+    department: '',
+  };
   const [profile, setProfile] = useState(initialProfile);
   const [draft, setDraft] = useState(initialProfile);
   const [avatarPreview, setAvatarPreview] = useState(adminProfile.avatarUrl);
