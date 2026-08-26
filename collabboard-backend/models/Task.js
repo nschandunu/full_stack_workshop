@@ -51,6 +51,16 @@ let tasks = [
 
 const Task = {
   tasks,
+  findAll: ({ boardId, columnId } = {}) => {
+    let result = [...tasks];
+    if (boardId) {
+      result = result.filter((t) => t.boardId === boardId);
+    }
+    if (columnId) {
+      result = result.filter((t) => t.columnId === columnId);
+    }
+    return result;
+  },
 };
 
 module.exports = Task;
