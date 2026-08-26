@@ -1,6 +1,5 @@
 const express = require('express');
 const router = express.Router();
-
-// Member 4 will implement task endpoints here
+const taskController = require('../controllers/taskController');
 
 module.exports = router;
