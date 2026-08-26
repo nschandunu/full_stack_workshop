@@ -1,5 +1,6 @@
 import './sidebar.css';
 import { useAuth } from '../../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
 function Icon({ name }) {
   switch (name) {
@@ -96,8 +97,14 @@ function Icon({ name }) {
 }
 
 function Sidebar({ activeRoute }) {
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
   const role = user?.role ?? 'member';
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    navigate('/login', { replace: true });
+  };
 
   const navItems = [
     { id: 'dashboard',  label: 'Dashboard', href: '/dashboard',                    icon: 'grid'      },
@@ -144,6 +151,20 @@ function Sidebar({ activeRoute }) {
           );
         })}
       </nav>
+
+      <button
+        className="sidebar__item sidebar__item--logout"
+        onClick={handleLogout}
+        aria-label="Log out"
+        title="Log out"
+      >
+        <span className="sidebar__icon">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M15 12H3m0 0 4-4m-4 4 4 4" />
+            <path d="M9 7V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-8a2 2 0 0 1-2-2v-2" />
+          </svg>
+        </span>
+      </button>
     </aside>
   );
 }
