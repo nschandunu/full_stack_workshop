@@ -61,6 +61,43 @@ const Task = {
     }
     return result;
   },
+  findById: (id) => {
+    return tasks.find((t) => t.id === id) || null;
+  },
+  create: (data) => {
+    const newTask = {
+      id: `task_${Date.now()}`,
+      title: data.title,
+      description: data.description || "",
+      columnId: data.columnId,
+      boardId: data.boardId || "board-1",
+      priority: data.priority || "medium",
+      assignee: data.assignee || null,
+      dueDate: data.dueDate || null,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+    tasks.push(newTask);
+    return newTask;
+  },
+  update: (id, updates) => {
+    const index = tasks.findIndex((t) => t.id === id);
+    if (index === -1) return null;
+
+    tasks[index] = {
+      ...tasks[index],
+      ...updates,
+      id,
+      updatedAt: new Date().toISOString(),
+    };
+    return tasks[index];
+  },
+  delete: (id) => {
+    const index = tasks.findIndex((t) => t.id === id);
+    if (index === -1) return false;
+    tasks.splice(index, 1);
+    return true;
+  },
 };
 
 module.exports = Task;
