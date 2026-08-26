@@ -64,9 +64,37 @@ const moveTask = async (req, res, next) => {
   }
 };
 
+const updateTask = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const existingTask = Task.findById(id);
+
+    if (!existingTask) {
+      return res.status(404).json({ error: { message: `Task with id '${id}' not found.` } });
+    }
+
+    const { title, description, columnId, boardId, priority, assignee, dueDate } = req.body;
+
+    const updatedTask = Task.update(id, {
+      ...(title !== undefined && { title: title.trim() }),
+      ...(description !== undefined && { description }),
+      ...(columnId !== undefined && { columnId }),
+      ...(boardId !== undefined && { boardId }),
+      ...(priority !== undefined && { priority }),
+      ...(assignee !== undefined && { assignee }),
+      ...(dueDate !== undefined && { dueDate }),
+    });
+
+    res.status(200).json(updatedTask);
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   getTasks,
   getTaskById,
   createTask,
   moveTask,
+  updateTask,
 };
