@@ -57,3 +57,40 @@ exports.deleteBoard = async (req, res) => {
     res.status(500).json({ message: 'Failed to delete board', error: err.message });
   }
 };
+// POST /api/boards/:id/columns
+exports.addColumn = async (req, res) => {
+  try {
+    const { name } = req.body;
+
+    if (!name) {
+      return res.status(400).json({
+        message: 'Column name is required'
+      });
+    }
+
+    const board = await Board.findOne({
+      _id: req.params.id,
+      owner: req.user.id
+    });
+
+    if (!board) {
+      return res.status(404).json({
+        message: 'Board not found'
+      });
+    }
+
+    board.columns.push({
+      name,
+      order: board.columns.length
+    });
+
+    await board.save();
+
+    res.status(201).json(board);
+  } catch (err) {
+    res.status(500).json({
+      message: 'Failed to add column',
+      error: err.message
+    });
+  }
+};
