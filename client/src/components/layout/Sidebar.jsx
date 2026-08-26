@@ -1,17 +1,5 @@
 import './sidebar.css';
-
-const navItems = [
-  { id: 'dashboard', label: 'Dashboard', href: '/dashboard', icon: 'grid' },
-  { id: 'tasks', label: 'Tasks', href: '/tasks', icon: 'checklist' },
-  { id: 'overview', label: 'Overview', href: '/features/projects/overview', icon: 'grid' },
-  { id: 'analytics', label: 'Analytics', href: '/features/projects/analytics', icon: 'chart' },
-  { id: 'kanban', label: 'Kanban', href: '/features/projects/kanban', icon: 'board' },
-  { id: 'messages', label: 'Messages', href: '/features/projects/chat', icon: 'message', badge: true },
-  { id: 'team', label: 'Team', href: '/profiles/admin', icon: 'users', accent: true },
-  { id: 'profile', label: 'Profile', href: '/profiles/user', icon: 'profile' },
-  { id: 'files', label: 'Files', href: '/features/projects/files', icon: 'folder' },
-  { id: 'settings', label: 'Settings', href: '/features/projects/settings', icon: 'settings' },
-];
+import { useAuth } from '../../context/AuthContext';
 
 function Icon({ name }) {
   switch (name) {
@@ -108,6 +96,25 @@ function Icon({ name }) {
 }
 
 function Sidebar({ activeRoute }) {
+  const { user } = useAuth();
+  const role = user?.role ?? 'member';
+
+  const navItems = [
+    { id: 'dashboard',  label: 'Dashboard', href: '/dashboard',                    icon: 'grid'      },
+    { id: 'tasks',      label: 'Tasks',      href: '/tasks',                         icon: 'checklist' },
+    { id: 'overview',   label: 'Overview',   href: '/features/projects/overview',    icon: 'grid'      },
+    { id: 'analytics',  label: 'Analytics',  href: '/features/projects/analytics',   icon: 'chart'     },
+    { id: 'kanban',     label: 'Kanban',     href: '/features/projects/kanban',      icon: 'board'     },
+    { id: 'messages',   label: 'Messages',   href: '/features/projects/chat',        icon: 'message', badge: true },
+    // Team management — admin only
+    ...(role === 'admin'
+      ? [{ id: 'team', label: 'Team', href: '/profiles/admin', icon: 'users', accent: true }]
+      : []),
+    { id: 'profile',    label: 'Profile',    href: '/profile',                       icon: 'profile'   },
+    { id: 'files',      label: 'Files',      href: '/features/projects/files',       icon: 'folder'    },
+    { id: 'settings',   label: 'Settings',   href: '/features/projects/settings',    icon: 'settings'  },
+  ];
+
   return (
     <aside className="sidebar" aria-label="Primary navigation">
       <div className="sidebar__brand" aria-hidden="true">
