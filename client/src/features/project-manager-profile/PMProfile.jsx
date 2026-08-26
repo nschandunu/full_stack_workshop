@@ -32,7 +32,17 @@ const emptyErrors = {
 
 export default function PMProfile() {
   const { user: authUser } = useAuth();
-  const initialProfile = { ...pmProfile, name: authUser?.name ?? pmProfile.name, email: authUser?.email ?? pmProfile.email };
+  const initialProfile = {
+    ...pmProfile,
+    name:       authUser?.name  ?? '',
+    email:      authUser?.email ?? '',
+    username:   authUser?.email?.split('@')[0] ?? '',
+    phone:      '',
+    location:   '',
+    jobTitle:   '',
+    bio:        '',
+    department: '',
+  };
   const [profile, setProfile] = useState(initialProfile);
   const [draft, setDraft] = useState(initialProfile);
   const [avatarPreview, setAvatarPreview] = useState(pmProfile.avatarUrl);
