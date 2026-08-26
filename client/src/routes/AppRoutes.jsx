@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from '../context/AuthContext';
+import RoleBasedProfile, { RoleRoute } from '../components/routing/RoleBasedProfile';
 import AuthLayout from '../components/layout/AuthLayout';
 import Sidebar from '../components/layout/Sidebar';
 import Login from '../pages/Login';
@@ -62,9 +63,13 @@ function AppRoutes() {
       <Route path="/features/projects/files" element={<ProtectedRoute><WorkspaceLayout><FilesPage /></WorkspaceLayout></ProtectedRoute>} />
       <Route path="/features/projects/chat" element={<ProtectedRoute><WorkspaceLayout><ChatPage /></WorkspaceLayout></ProtectedRoute>} />
       <Route path="/features/projects/analytics" element={<ProtectedRoute><WorkspaceLayout><AnalyticsPage /></WorkspaceLayout></ProtectedRoute>} />
-      <Route path="/profiles/admin" element={<ProtectedRoute><WorkspaceLayout><AdminProfile /></WorkspaceLayout></ProtectedRoute>} />
-      <Route path="/profiles/project-manager" element={<ProtectedRoute><WorkspaceLayout><PMProfile /></WorkspaceLayout></ProtectedRoute>} />
-      <Route path="/profiles/user" element={<ProtectedRoute><WorkspaceLayout><UserProfile /></WorkspaceLayout></ProtectedRoute>} />
+      {/* Single role-aware profile entry point */}
+      <Route path="/profile" element={<ProtectedRoute><WorkspaceLayout><RoleBasedProfile /></WorkspaceLayout></ProtectedRoute>} />
+
+      {/* Direct profile routes — guarded: wrong-role users bounce to /profile */}
+      <Route path="/profiles/admin" element={<ProtectedRoute><RoleRoute allowed={['admin']}><WorkspaceLayout><AdminProfile /></WorkspaceLayout></RoleRoute></ProtectedRoute>} />
+      <Route path="/profiles/project-manager" element={<ProtectedRoute><RoleRoute allowed={['manager']}><WorkspaceLayout><PMProfile /></WorkspaceLayout></RoleRoute></ProtectedRoute>} />
+      <Route path="/profiles/user" element={<ProtectedRoute><RoleRoute allowed={['member']}><WorkspaceLayout><UserProfile /></WorkspaceLayout></RoleRoute></ProtectedRoute>} />
 
       <Route path="*" element={<Navigate to="/login" replace />} />
     </Routes>
