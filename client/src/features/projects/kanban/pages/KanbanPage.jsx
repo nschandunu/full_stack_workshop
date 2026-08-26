@@ -2,10 +2,12 @@ import { useState } from 'react';
 import KanbanBoard from '../components/KanbanBoard.jsx';
 import TaskContextMenu from '../components/TaskContextMenu.jsx';
 import { useKanban } from '../hooks/useKanban.js';
+import { usePermission } from '../../../../hooks/usePermission.js';
 import '../kanban.css';
 
 function KanbanPage() {
   const { tasks, columns, loading, error, editTask, moveTaskToColumn, removeTask, addTask } = useKanban();
+  const { canEdit, canDelete } = usePermission();
   const [contextMenu, setContextMenu] = useState(null);
 
   const closeContextMenu = () => {
@@ -91,8 +93,8 @@ function KanbanPage() {
           Track work across To Do, Doing, and Done in one place.
         </p>
       </header>
-      <KanbanBoard tasks={tasks} onOpenTask={() => {}} onCardContextMenu={openContextMenu} />
-      {contextMenu ? (
+      <KanbanBoard tasks={tasks} onOpenTask={() => {}} onCardContextMenu={canEdit ? openContextMenu : null} />
+      {canEdit && contextMenu ? (
         <TaskContextMenu
           task={contextMenu.task}
           position={contextMenu.position}
@@ -101,8 +103,8 @@ function KanbanPage() {
           onEdit={handleEditTask}
           onMove={async (task, status) => moveTaskToColumn(task.id, status)}
           onChangePriority={handleChangePriority}
-          onDuplicate={handleDuplicateTask}
-          onDelete={handleDeleteTask}
+          onDuplicate={canEdit ? handleDuplicateTask : null}
+          onDelete={canDelete ? handleDeleteTask : null}
         />
       ) : null}
     </main>
