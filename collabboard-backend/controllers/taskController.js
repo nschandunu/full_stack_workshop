@@ -10,6 +10,22 @@ const getTasks = async (req, res, next) => {
   }
 };
 
+const getTaskById = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const task = Task.findById(id);
+
+    if (!task) {
+      return res.status(404).json({ error: { message: `Task with id '${id}' not found.` } });
+    }
+
+    res.status(200).json(task);
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   getTasks,
+  getTaskById,
 };
