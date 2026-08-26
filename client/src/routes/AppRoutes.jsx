@@ -1,5 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { AuthProvider, useAuth } from '../context/AuthContext';
 import AuthLayout from '../components/layout/AuthLayout';
+import Sidebar from '../components/layout/Sidebar';
 import Login from '../pages/Login';
 import Register from '../pages/Register';
 import DashboardPage from '../features/dashboard/pages/DashboardPage';
@@ -13,7 +15,6 @@ import FilesPage from '../features/projects/pages/FilesPage';
 import ChatPage from '../features/projects/pages/ChatPage';
 import AnalyticsPage from '../features/projects/pages/AnalyticsPage';
 import TasksPage from '../features/tasks/TasksPage';
-import Sidebar from '../components/layout/Sidebar';
 import '../App.css';
 
 function WorkspaceLayout({ children }) {
@@ -25,34 +26,57 @@ function WorkspaceLayout({ children }) {
   );
 }
 
-export const AppRoutes = () => {
+/** Redirects unauthenticated users to /login */
+function ProtectedRoute({ children }) {
+  const { isAuthenticated } = useAuth();
+  return isAuthenticated ? children : <Navigate to="/login" replace />;
+}
+
+/** Redirects already-logged-in users away from auth pages */
+function GuestRoute({ children }) {
+  const { isAuthenticated } = useAuth();
+  return isAuthenticated ? <Navigate to="/dashboard" replace /> : children;
+}
+
+function AppRoutes() {
+  return (
+    <Routes>
+      <Route path="/" element={<Navigate to="/login" replace />} />
+
+      {/* Auth pages — inaccessible once logged in */}
+      <Route
+        path="/login"
+        element={<GuestRoute><AuthLayout><Login /></AuthLayout></GuestRoute>}
+      />
+      <Route
+        path="/register"
+        element={<GuestRoute><AuthLayout><Register /></AuthLayout></GuestRoute>}
+      />
+
+      {/* Protected workspace pages */}
+      <Route path="/dashboard" element={<ProtectedRoute><WorkspaceLayout><DashboardPage /></WorkspaceLayout></ProtectedRoute>} />
+      <Route path="/tasks" element={<ProtectedRoute><WorkspaceLayout><TasksPage /></WorkspaceLayout></ProtectedRoute>} />
+      <Route path="/features/projects/overview" element={<ProtectedRoute><WorkspaceLayout><OverviewPage /></WorkspaceLayout></ProtectedRoute>} />
+      <Route path="/features/projects/kanban" element={<ProtectedRoute><WorkspaceLayout><KanbanPage /></WorkspaceLayout></ProtectedRoute>} />
+      <Route path="/features/projects/settings" element={<ProtectedRoute><WorkspaceLayout><SettingsPage /></WorkspaceLayout></ProtectedRoute>} />
+      <Route path="/features/projects/files" element={<ProtectedRoute><WorkspaceLayout><FilesPage /></WorkspaceLayout></ProtectedRoute>} />
+      <Route path="/features/projects/chat" element={<ProtectedRoute><WorkspaceLayout><ChatPage /></WorkspaceLayout></ProtectedRoute>} />
+      <Route path="/features/projects/analytics" element={<ProtectedRoute><WorkspaceLayout><AnalyticsPage /></WorkspaceLayout></ProtectedRoute>} />
+      <Route path="/profiles/admin" element={<ProtectedRoute><WorkspaceLayout><AdminProfile /></WorkspaceLayout></ProtectedRoute>} />
+      <Route path="/profiles/project-manager" element={<ProtectedRoute><WorkspaceLayout><PMProfile /></WorkspaceLayout></ProtectedRoute>} />
+      <Route path="/profiles/user" element={<ProtectedRoute><WorkspaceLayout><UserProfile /></WorkspaceLayout></ProtectedRoute>} />
+
+      <Route path="*" element={<Navigate to="/login" replace />} />
+    </Routes>
+  );
+}
+
+export default function AppRoutesWithProvider() {
   return (
     <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Navigate to="/login" replace />} />
-        <Route
-          path="/login"
-          element={<AuthLayout><Login /></AuthLayout>}
-        />
-        <Route
-          path="/register"
-          element={<AuthLayout><Register /></AuthLayout>}
-        />
-        <Route path="/dashboard" element={<WorkspaceLayout><DashboardPage /></WorkspaceLayout>} />
-        <Route path="/tasks" element={<WorkspaceLayout><TasksPage /></WorkspaceLayout>} />
-        <Route path="/features/projects/overview" element={<WorkspaceLayout><OverviewPage /></WorkspaceLayout>} />
-        <Route path="/features/projects/kanban" element={<WorkspaceLayout><KanbanPage /></WorkspaceLayout>} />
-        <Route path="/features/projects/settings" element={<WorkspaceLayout><SettingsPage /></WorkspaceLayout>} />
-        <Route path="/features/projects/files" element={<WorkspaceLayout><FilesPage /></WorkspaceLayout>} />
-        <Route path="/features/projects/chat" element={<WorkspaceLayout><ChatPage /></WorkspaceLayout>} />
-        <Route path="/features/projects/analytics" element={<WorkspaceLayout><AnalyticsPage /></WorkspaceLayout>} />
-        <Route path="/profiles/admin" element={<WorkspaceLayout><AdminProfile /></WorkspaceLayout>} />
-        <Route path="/profiles/project-manager" element={<WorkspaceLayout><PMProfile /></WorkspaceLayout>} />
-        <Route path="/profiles/user" element={<WorkspaceLayout><UserProfile /></WorkspaceLayout>} />
-        <Route path="*" element={<Navigate to="/login" replace />} />
-      </Routes>
+      <AuthProvider>
+        <AppRoutes />
+      </AuthProvider>
     </BrowserRouter>
   );
-};
-
-export default AppRoutes;
+}
