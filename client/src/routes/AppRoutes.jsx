@@ -67,9 +67,9 @@ function AppRoutes() {
       <Route path="/profile" element={<ProtectedRoute><WorkspaceLayout><RoleBasedProfile /></WorkspaceLayout></ProtectedRoute>} />
 
       {/* Direct profile routes — guarded: wrong-role users bounce to /profile */}
-      <Route path="/profiles/admin" element={<ProtectedRoute><RoleRoute allowed={['admin']}><WorkspaceLayout><AdminProfile /></WorkspaceLayout></RoleRoute></ProtectedRoute>} />
-      <Route path="/profiles/project-manager" element={<ProtectedRoute><RoleRoute allowed={['manager']}><WorkspaceLayout><PMProfile /></WorkspaceLayout></RoleRoute></ProtectedRoute>} />
-      <Route path="/profiles/user" element={<ProtectedRoute><RoleRoute allowed={['member']}><WorkspaceLayout><UserProfile /></WorkspaceLayout></RoleRoute></ProtectedRoute>} />
+      <Route path="/profiles/admin"           element={<ProtectedRoute><RoleRoute allowed={['admin']}                   ><WorkspaceLayout><AdminProfile /></WorkspaceLayout></RoleRoute></ProtectedRoute>} />
+      <Route path="/profiles/project-manager" element={<ProtectedRoute><RoleRoute allowed={['admin', 'manager']}         ><WorkspaceLayout><PMProfile    /></WorkspaceLayout></RoleRoute></ProtectedRoute>} />
+      <Route path="/profiles/user"            element={<ProtectedRoute><RoleRoute allowed={['admin', 'manager', 'member']}><WorkspaceLayout><UserProfile  /></WorkspaceLayout></RoleRoute></ProtectedRoute>} />
 
       <Route path="*" element={<Navigate to="/login" replace />} />
     </Routes>
