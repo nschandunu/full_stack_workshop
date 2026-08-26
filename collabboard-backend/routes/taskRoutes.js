@@ -8,5 +8,6 @@ router.get('/:id', taskController.getTaskById);
 router.post('/', validateCreateTask, taskController.createTask);
 router.put('/:id/move', validateMoveTask, taskController.moveTask);
 router.put('/:id', taskController.updateTask);
+router.patch('/:id', taskController.updateTask);
 
 module.exports = router;
