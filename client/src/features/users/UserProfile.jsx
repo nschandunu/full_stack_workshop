@@ -1,5 +1,4 @@
 import { useCallback, useRef, useState } from "react";
-import { Link } from "react-router-dom";
 import "./UserProfile.css";
 
 import { mockUser, mockStats, mockActivity, mockSettings, TIMEZONES, DEPARTMENTS } from "./mockData";
@@ -26,7 +25,17 @@ function validateDraft(draft) {
 /* ── Component ───────────────────────────────────────────────────────────── */
 export default function UserProfile({ isReadOnly = false }) {
   const { user: authUser } = useAuth();
-  const [profile,   setProfile]   = useState({ ...mockUser, name: authUser?.name ?? mockUser.name, email: authUser?.email ?? mockUser.email });
+  const [profile,   setProfile]   = useState({
+    ...mockUser,
+    name:       authUser?.name  ?? '',
+    email:      authUser?.email ?? '',
+    username:   authUser?.email?.split('@')[0] ?? '',
+    phone:      '',
+    location:   '',
+    jobTitle:   '',
+    bio:        '',
+    department: '',
+  });
   const [draft,     setDraft]     = useState(null);
   const [errors,    setErrors]    = useState({});
   const [isEditing, setIsEditing] = useState(false);
@@ -93,12 +102,6 @@ export default function UserProfile({ isReadOnly = false }) {
   /* ── Render ── */
   return (
     <div className="up-page">
-      <nav className="up-profile-switcher" aria-label="Switch profile">
-        <span>Other profiles</span>
-        <Link to="/profiles/project-manager">Manager profile</Link>
-        <Link to="/profiles/admin">Admin profile</Link>
-      </nav>
-
       <ProfileHeader
         profile={displayProfile}
         isEditing={isEditing}
