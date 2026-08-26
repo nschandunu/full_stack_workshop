@@ -18,6 +18,17 @@ const validateCreateTask = (req, res, next) => {
   next();
 };
 
+const validateMoveTask = (req, res, next) => {
+  const { targetColumnId } = req.body;
+
+  if (!targetColumnId || typeof targetColumnId !== "string" || targetColumnId.trim() === "") {
+    return res.status(400).json({ error: { message: "Field 'targetColumnId' is required to move a task." } });
+  }
+
+  next();
+};
+
 module.exports = {
   validateCreateTask,
+  validateMoveTask,
 };
