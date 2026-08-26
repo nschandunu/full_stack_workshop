@@ -1,13 +1,18 @@
 const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
 async function request(path, options = {}) {
-  const res = await fetch(`${API_BASE}${path}`, {
-    headers: {
-      'Content-Type': 'application/json',
-      ...options.headers,
-    },
-    ...options,
-  });
+  let res;
+  try {
+    res = await fetch(`${API_BASE}${path}`, {
+      headers: {
+        'Content-Type': 'application/json',
+        ...options.headers,
+      },
+      ...options,
+    });
+  } catch {
+    throw new Error('Cannot reach the server. Make sure the backend is running on port 5001.');
+  }
 
   const data = await res.json();
 
