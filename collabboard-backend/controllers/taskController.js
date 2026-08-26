@@ -25,7 +25,27 @@ const getTaskById = async (req, res, next) => {
   }
 };
 
+const createTask = async (req, res, next) => {
+  try {
+    const { title, description, columnId, boardId, priority, assignee, dueDate } = req.body;
+    const newTask = Task.create({
+      title: title.trim(),
+      description,
+      columnId,
+      boardId,
+      priority,
+      assignee,
+      dueDate,
+    });
+
+    res.status(201).json(newTask);
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   getTasks,
   getTaskById,
+  createTask,
 };
