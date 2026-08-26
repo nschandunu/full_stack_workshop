@@ -10,6 +10,7 @@ import {
   pmTeam,
   timezones,
 } from "./mockPMData";
+import { useAuth } from "../../context/AuthContext";
 import ProfileHeader from "./components/ProfileHeader";
 import ProfileTabs from "./components/ProfileTabs";
 import OverviewTab from "./components/OverviewTab";
@@ -30,8 +31,20 @@ const emptyErrors = {
 };
 
 export default function PMProfile() {
-  const [profile, setProfile] = useState(pmProfile);
-  const [draft, setDraft] = useState(pmProfile);
+  const { user: authUser } = useAuth();
+  const initialProfile = {
+    ...pmProfile,
+    name:       authUser?.name  ?? '',
+    email:      authUser?.email ?? '',
+    username:   authUser?.email?.split('@')[0] ?? '',
+    phone:      '',
+    location:   '',
+    jobTitle:   '',
+    bio:        '',
+    department: '',
+  };
+  const [profile, setProfile] = useState(initialProfile);
+  const [draft, setDraft] = useState(initialProfile);
   const [avatarPreview, setAvatarPreview] = useState(pmProfile.avatarUrl);
   const [isEditing, setIsEditing] = useState(false);
   const [saving, setSaving] = useState(false);

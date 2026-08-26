@@ -2,9 +2,11 @@ import { useEffect, useState } from 'react';
 import TaskCard from './TaskCard';
 import TaskModal from './TaskModal';
 import { getAllTasks, getColumns } from '../../lib/dataStore';
+import { usePermission } from '../../hooks/usePermission';
 import './tasks-page.css';
 
 export default function TasksPage() {
+  const { canEdit } = usePermission();
   const [tasks, setTasks] = useState([]);
   const [columns, setColumns] = useState([]);
   const [selectedTask, setSelectedTask] = useState(null);
@@ -66,7 +68,7 @@ export default function TasksPage() {
         })}
       </div>
 
-      <TaskModal task={selectedTask} onClose={() => setSelectedTask(null)} />
+      <TaskModal task={selectedTask} onClose={() => setSelectedTask(null)} isReadOnly={!canEdit} />
     </main>
   );
 }

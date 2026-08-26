@@ -1,17 +1,6 @@
 import './sidebar.css';
-
-const navItems = [
-  { id: 'dashboard', label: 'Dashboard', href: '/dashboard', icon: 'grid' },
-  { id: 'tasks', label: 'Tasks', href: '/tasks', icon: 'checklist' },
-  { id: 'overview', label: 'Overview', href: '/features/projects/overview', icon: 'grid' },
-  { id: 'analytics', label: 'Analytics', href: '/features/projects/analytics', icon: 'chart' },
-  { id: 'kanban', label: 'Kanban', href: '/features/projects/kanban', icon: 'board' },
-  { id: 'messages', label: 'Messages', href: '/features/projects/chat', icon: 'message', badge: true },
-  { id: 'team', label: 'Team', href: '/profiles/admin', icon: 'users', accent: true },
-  { id: 'profile', label: 'Profile', href: '/profiles/user', icon: 'profile' },
-  { id: 'files', label: 'Files', href: '/features/projects/files', icon: 'folder' },
-  { id: 'settings', label: 'Settings', href: '/features/projects/settings', icon: 'settings' },
-];
+import { useAuth } from '../../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
 function Icon({ name }) {
   switch (name) {
@@ -108,6 +97,31 @@ function Icon({ name }) {
 }
 
 function Sidebar({ activeRoute }) {
+  const { user, logout } = useAuth();
+  const role = user?.role ?? 'member';
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    navigate('/login', { replace: true });
+  };
+
+  const navItems = [
+    { id: 'dashboard',  label: 'Dashboard', href: '/dashboard',                    icon: 'grid'      },
+    { id: 'tasks',      label: 'Tasks',      href: '/tasks',                         icon: 'checklist' },
+    { id: 'overview',   label: 'Overview',   href: '/features/projects/overview',    icon: 'grid'      },
+    { id: 'analytics',  label: 'Analytics',  href: '/features/projects/analytics',   icon: 'chart'     },
+    { id: 'kanban',     label: 'Kanban',     href: '/features/projects/kanban',      icon: 'board'     },
+    { id: 'messages',   label: 'Messages',   href: '/features/projects/chat',        icon: 'message', badge: true },
+    // Team management — admin only
+    ...(role === 'admin'
+      ? [{ id: 'team', label: 'Team', href: '/profiles/admin', icon: 'users', accent: true }]
+      : []),
+    { id: 'profile',    label: 'Profile',    href: '/profile',                       icon: 'profile'   },
+    { id: 'files',      label: 'Files',      href: '/features/projects/files',       icon: 'folder'    },
+    { id: 'settings',   label: 'Settings',   href: '/features/projects/settings',    icon: 'settings'  },
+  ];
+
   return (
     <aside className="sidebar" aria-label="Primary navigation">
       <div className="sidebar__brand" aria-hidden="true">
@@ -137,6 +151,20 @@ function Sidebar({ activeRoute }) {
           );
         })}
       </nav>
+
+      <button
+        className="sidebar__item sidebar__item--logout"
+        onClick={handleLogout}
+        aria-label="Log out"
+        title="Log out"
+      >
+        <span className="sidebar__icon">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M15 12H3m0 0 4-4m-4 4 4 4" />
+            <path d="M9 7V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-8a2 2 0 0 1-2-2v-2" />
+          </svg>
+        </span>
+      </button>
     </aside>
   );
 }
