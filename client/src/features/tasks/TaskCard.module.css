@@ -3,12 +3,22 @@
   border: 2px solid #000000;
   border-radius: 0;
   padding: 16px;
-  cursor: pointer;
+  cursor: grab;
+  user-select: none;
   transition: background-color 180ms ease;
+}
+
+.card:active {
+  cursor: grabbing;
 }
 
 .card:hover {
   background-color: #f5b700;
+}
+
+.isDragging {
+  opacity: 0.4;
+  border-style: dashed;
 }
 
 .title {

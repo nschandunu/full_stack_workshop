@@ -1,4 +1,5 @@
 // @ts-check
+import { useState } from "react";
 import styles from "./TaskCard.module.css";
 import { TaskPriority } from "../../lib/types.jsx";
 
@@ -13,6 +14,8 @@ import { TaskPriority } from "../../lib/types.jsx";
  */
 
 export default function TaskCard({ task, onOpen }) {
+  const [isDragging, setIsDragging] = useState(false);
+
   const badgeClass =
     task.priority === TaskPriority.enum.high
       ? styles.badgeHigh
@@ -20,11 +23,24 @@ export default function TaskCard({ task, onOpen }) {
         ? styles.badgeMedium
         : styles.badgeLow;
 
+  const handleDragStart = (e) => {
+    setIsDragging(true);
+    e.dataTransfer.setData("text/plain", task.id);
+    e.dataTransfer.effectAllowed = "move";
+  };
+
+  const handleDragEnd = () => {
+    setIsDragging(false);
+  };
+
   return (
     <div
-      className={styles.card}
+      className={`${styles.card} ${isDragging ? styles.isDragging : ""}`}
       role="button"
       tabIndex={0}
+      draggable={true}
+      onDragStart={handleDragStart}
+      onDragEnd={handleDragEnd}
       onClick={() => onOpen(task.id)}
       onKeyDown={(e) => {
         if (e.key === "Enter" || e.key === " ") {
