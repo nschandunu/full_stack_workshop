@@ -1,6 +1,6 @@
 <div align="center">
 
-# ⚡ CollabBoard — Modern Full-Stack Agile Workspace
+# ⚡ CollabBoard - Modern Full-Stack Agile Workspace
 
 > **A high-performance, real-time, role-aware project management and Kanban task orchestration suite.**
 
