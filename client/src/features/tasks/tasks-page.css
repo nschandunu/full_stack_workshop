@@ -34,12 +34,100 @@
   color: var(--text-muted);
 }
 
+.tasks-page__header-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
 .tasks-page__count {
   padding: 8px 12px;
   border: 2px solid var(--border);
   background: var(--primary);
   text-transform: uppercase;
   font-size: 12px;
+  font-weight: 800;
+  display: inline-flex;
+  align-items: center;
+}
+
+.tasks-page__create-btn {
+  padding: 8px 16px;
+  border: 2px solid var(--border);
+  background: var(--primary);
+  color: #000000;
+  font-weight: 800;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  box-shadow: 2px 2px 0px #000000;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: transform 100ms ease, box-shadow 100ms ease, background-color 150ms ease;
+}
+
+.tasks-page__create-btn:hover {
+  background: #fbbf24;
+  transform: translateY(-1px);
+  box-shadow: 3px 3px 0px #000000;
+}
+
+.tasks-page__create-btn:active {
+  transform: translateY(1px);
+  box-shadow: 1px 1px 0px #000000;
+}
+
+.tasks-column__header-right {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.tasks-column__add-btn {
+  width: 28px;
+  height: 28px;
+  border: 2px solid var(--border);
+  background: #ffffff;
+  color: #000000;
+  font-weight: 900;
+  font-size: 16px;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  line-height: 1;
+  padding: 0;
+  transition: all 120ms ease;
+}
+
+.tasks-column__add-btn:hover {
+  background: var(--primary);
+  transform: translateY(-1px);
+  box-shadow: 1px 1px 0px #000000;
+}
+
+.tasks-column__bottom-add-btn {
+  margin-top: 14px;
+  width: 100%;
+  padding: 8px 12px;
+  border: 2px dashed #9ca3af;
+  background: transparent;
+  color: #4b5563;
+  font-weight: 700;
+  font-size: 13px;
+  cursor: pointer;
+  text-align: center;
+  transition: all 150ms ease;
+}
+
+.tasks-column__bottom-add-btn:hover {
+  border-color: #000000;
+  border-style: solid;
+  background: #ffffff;
+  color: #000000;
+  box-shadow: 2px 2px 0px #000000;
 }
 
 .tasks-page__error {

@@ -61,6 +61,18 @@ export async function addColumn(column) {
  * @returns {Promise<Task[]>}
  */
 export async function getAllTasks() {
+  try {
+    const res = await fetch("http://localhost:5000/api/tasks");
+    if (res.ok) {
+      const serverTasks = await res.json();
+      if (Array.isArray(serverTasks) && serverTasks.length > 0) {
+        _tasks = serverTasks.map((t) => TaskSchema.parse(t));
+        return _tasks;
+      }
+    }
+  } catch {
+    // fallback to local state
+  }
   return _tasks.map((t) => TaskSchema.parse(t));
 }
 
@@ -101,11 +113,62 @@ export async function saveTask(task) {
 }
 
 /**
+ * @param {Omit<Task, "id" | "createdAt" | "updatedAt"> & { id?: string }} taskData
+ * @returns {Promise<Task>}
+ */
+export async function createTask(taskData) {
+  const now = new Date().toISOString();
+  const newTask = {
+    id: taskData.id || `task-${Date.now()}`,
+    title: taskData.title,
+    description: taskData.description || "",
+    columnId: taskData.columnId || "col-todo",
+    priority: taskData.priority || "medium",
+    assignee: taskData.assignee || "user-1",
+    dueDate: taskData.dueDate || now,
+    createdAt: now,
+    updatedAt: now,
+  };
+
+  try {
+    const res = await fetch("http://localhost:5000/api/tasks", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(newTask),
+    });
+    if (res.ok) {
+      const serverTask = await res.json();
+      const parsed = TaskSchema.parse(serverTask);
+      _tasks.push(parsed);
+      const col = _columns.find((c) => c.id === parsed.columnId);
+      if (col && !col.taskIds.includes(parsed.id)) {
+        col.taskIds.push(parsed.id);
+      }
+      return parsed;
+    }
+  } catch {
+    // fallback
+  }
+
+  return saveTask(newTask);
+}
+
+/**
  * @param {string} taskId
  * @param {Partial<Task>} updates
  * @returns {Promise<Task>}
  */
 export async function updateTask(taskId, updates) {
+  try {
+    await fetch(`http://localhost:5000/api/tasks/${taskId}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(updates),
+    });
+  } catch {
+    // fallback
+  }
+
   const idx = _tasks.findIndex((t) => t.id === taskId);
   if (idx === -1) throw new Error(`Task "${taskId}" not found.`);
 
@@ -134,6 +197,14 @@ export async function updateTask(taskId, updates) {
  * @returns {Promise<boolean>}
  */
 export async function deleteTask(taskId) {
+  try {
+    await fetch(`http://localhost:5000/api/tasks/${taskId}`, {
+      method: "DELETE",
+    });
+  } catch {
+    // fallback
+  }
+
   const idx = _tasks.findIndex((t) => t.id === taskId);
   if (idx === -1) return false;
 
