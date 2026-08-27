@@ -103,6 +103,20 @@
   stroke-linejoin: round;
 }
 
+.sidebar__item--logout {
+  margin-top: auto;
+  cursor: pointer;
+  color: #c0392b;
+  border-color: #f5c6c4;
+  background: #fff5f5;
+}
+
+.sidebar__item--logout:hover,
+.sidebar__item--logout:focus-visible {
+  background: #fde8e7;
+  transform: translateY(-1px);
+}
+
 .sidebar__badge {
   position: absolute;
   top: 7px;
