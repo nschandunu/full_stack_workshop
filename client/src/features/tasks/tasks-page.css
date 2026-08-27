@@ -62,6 +62,13 @@
   padding: 16px;
   border: 2px solid var(--border);
   background: var(--surface);
+  transition: background-color 150ms ease, border-color 150ms ease;
+}
+
+.tasks-column--drop-active {
+  background: #fdf2d0;
+  border-color: #000000;
+  border-style: dashed;
 }
 
 .tasks-column__header {
