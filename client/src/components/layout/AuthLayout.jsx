@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import { Layers } from 'lucide-react';
 import Badge from '../ui/Badge';
 import './auth-layout.css';
@@ -26,9 +27,15 @@ export const AuthLayout = ({ children }) => {
       {/* Bottom Footer Info */}
       <footer className="auth-footer">
         <div className="auth-footer-links">
-          <span className="hover:text-black transition-colors cursor-pointer">Security</span>
+          <Link to="/terms" className="hover:text-black font-semibold underline underline-offset-2 transition-colors cursor-pointer text-gray-700">
+            Terms & Conditions
+          </Link>
           <span>•</span>
-          <span className="hover:text-black transition-colors cursor-pointer">Privacy</span>
+          <Link to="/privacy" className="hover:text-black font-semibold underline underline-offset-2 transition-colors cursor-pointer text-gray-700">
+            Privacy Policy
+          </Link>
+          <span>•</span>
+          <span className="hover:text-black transition-colors cursor-pointer">Security</span>
           <span>•</span>
           <span className="hover:text-black transition-colors cursor-pointer">System Status</span>
         </div>

@@ -163,6 +163,26 @@ export const Register = () => {
           )}
 
           <div className="pt-2">
+            <p className="text-xs text-[#6B7280] text-center mb-3">
+              By creating an account, you agree to our{' '}
+              <Link
+                to="/terms"
+                className="font-bold text-black underline underline-offset-2 hover:text-[#F5B400] transition-colors"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Terms & Conditions
+              </Link>{' '}
+              and{' '}
+              <Link
+                to="/privacy"
+                className="font-bold text-black underline underline-offset-2 hover:text-[#F5B400] transition-colors"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Privacy Policy
+              </Link>.
+            </p>
             <Button
               type="submit"
               variant="primary"
