@@ -47,7 +47,22 @@ async function runTests() {
     boardId: 'board-1',
     priority: 'high',
   });
-  console.log('POST /api/tasks:', res.status === 201 && typeof res.data.id === 'string');
+  const createdId = res.data.id;
+  console.log('POST /api/tasks:', res.status === 201 && typeof createdId === 'string');
+
+  res = await request('PUT', `/api/tasks/${createdId}/move`, {
+    targetColumnId: 'col-inprogress',
+  });
+  console.log('PUT /api/tasks/:id/move:', res.status === 200 && res.data.columnId === 'col-inprogress');
+
+  res = await request('PATCH', `/api/tasks/${createdId}`, {
+    priority: 'medium',
+    assignee: 'user-2',
+  });
+  console.log('PATCH /api/tasks/:id:', res.status === 200 && res.data.priority === 'medium');
+
+  res = await request('DELETE', `/api/tasks/${createdId}`);
+  console.log('DELETE /api/tasks/:id:', res.status === 200);
 }
 
 runTests();
