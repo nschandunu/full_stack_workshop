@@ -34,8 +34,20 @@ function request(method, path, body = null) {
 }
 
 async function runTests() {
-  const res = await request('GET', '/api/tasks');
-  console.log('GET /api/tasks status:', res.status);
+  let res = await request('GET', '/api/tasks');
+  console.log('GET /api/tasks:', res.status === 200 && Array.isArray(res.data) && res.data.length > 0);
+
+  res = await request('GET', '/api/tasks?columnId=col-inprogress');
+  console.log('GET /api/tasks?columnId=col-inprogress:', res.status === 200 && res.data.every((t) => t.columnId === 'col-inprogress'));
+
+  res = await request('POST', '/api/tasks', {
+    title: 'Integration Test Task',
+    description: 'Testing task card creation',
+    columnId: 'col-todo',
+    boardId: 'board-1',
+    priority: 'high',
+  });
+  console.log('POST /api/tasks:', res.status === 201 && typeof res.data.id === 'string');
 }
 
 runTests();
