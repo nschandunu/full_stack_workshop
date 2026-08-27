@@ -69,6 +69,16 @@ export default function TasksPage() {
     }
   };
 
+  const handleStatusChange = async (taskId, newColumnId) => {
+    try {
+      const updated = await updateTask(taskId, { columnId: newColumnId });
+      setTasks((prev) => prev.map((t) => (t.id === taskId ? updated : t)));
+      setSelectedTask(updated);
+    } catch {
+      setError('Could not update task status.');
+    }
+  };
+
   return (
     <main className="tasks-page">
       <header className="tasks-page__header">
@@ -112,7 +122,13 @@ export default function TasksPage() {
         })}
       </div>
 
-      <TaskModal task={selectedTask} onClose={() => setSelectedTask(null)} isReadOnly={!canEdit} />
+      <TaskModal
+        task={selectedTask}
+        columns={columns}
+        onStatusChange={handleStatusChange}
+        onClose={() => setSelectedTask(null)}
+        isReadOnly={!canEdit}
+      />
     </main>
   );
 }
