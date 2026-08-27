@@ -63,10 +63,16 @@
   justify-content: center;
   line-height: 1;
   padding: 0;
+  transition: background-color 150ms ease;
 }
 
 .closeButton:hover {
   background-color: #f5b700;
+}
+
+.closeButton:focus-visible {
+  outline: 2px solid #000000;
+  outline-offset: 2px;
 }
 
 .title {
@@ -114,10 +120,17 @@
   font-size: 0.875rem;
   cursor: pointer;
   border-radius: 0;
+  outline: none;
+  transition: background-color 150ms ease;
 }
 
 .select:hover:not(:disabled) {
   background-color: #f5b700;
+}
+
+.select:focus-visible {
+  outline: 2px solid #000000;
+  outline-offset: 2px;
 }
 
 .badge {
