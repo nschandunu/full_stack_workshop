@@ -1,4 +1,18 @@
-const QuickActions = () => {
+import { useNavigate } from "react-router-dom";
+
+const QuickActions = ({ onNewTask }) => {
+  const navigate = useNavigate();
+
+  const handleAction = (id) => {
+    if (id === "task") {
+      onNewTask?.();
+    } else if (id === "project") {
+      navigate("/features/projects/overview");
+    } else if (id === "team") {
+      navigate("/profiles/admin");
+    }
+  };
+
   const actions = [
     {
       id: "project",
@@ -32,6 +46,7 @@ const QuickActions = () => {
             type="button"
             className="quick-action"
             key={action.id}
+            onClick={() => handleAction(action.id)}
           >
             <span className="quick-action__icon">
               +
