@@ -31,9 +31,11 @@ export const AuthLayout = ({ children }) => {
             Terms & Conditions
           </Link>
           <span>•</span>
-          <span className="hover:text-black transition-colors cursor-pointer">Security</span>
+          <Link to="/privacy" className="hover:text-black font-semibold underline underline-offset-2 transition-colors cursor-pointer text-gray-700">
+            Privacy Policy
+          </Link>
           <span>•</span>
-          <span className="hover:text-black transition-colors cursor-pointer">Privacy</span>
+          <span className="hover:text-black transition-colors cursor-pointer">Security</span>
           <span>•</span>
           <span className="hover:text-black transition-colors cursor-pointer">System Status</span>
         </div>

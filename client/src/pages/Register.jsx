@@ -172,6 +172,15 @@ export const Register = () => {
                 rel="noopener noreferrer"
               >
                 Terms & Conditions
+              </Link>{' '}
+              and{' '}
+              <Link
+                to="/privacy"
+                className="font-bold text-black underline underline-offset-2 hover:text-[#F5B400] transition-colors"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Privacy Policy
               </Link>.
             </p>
             <Button

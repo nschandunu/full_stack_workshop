@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { ArrowLeft, ShieldCheck, FileText, CheckCircle2, Printer } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import './terms.css';
@@ -188,6 +188,7 @@ export default function TermsPage() {
             <ul>
               <li><strong>Project Repository</strong>: <a href="https://github.com/nschandunu/full_stack_workshop" target="_blank" rel="noreferrer" className="text-black font-semibold underline">github.com/nschandunu/full_stack_workshop</a></li>
               <li><strong>Platform</strong>: CollabBoard / PLANR.SYS Workspace Engineering Team</li>
+              <li><strong>Privacy Inquiries</strong>: Review our <Link to="/privacy" className="text-black font-semibold underline">Privacy Policy</Link></li>
             </ul>
           </section>
 

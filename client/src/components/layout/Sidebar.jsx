@@ -101,6 +101,13 @@ function Icon({ name }) {
           <polyline points="10 9 9 9 8 9" />
         </svg>
       );
+    case 'privacy':
+      return (
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+          <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+        </svg>
+      );
     default:
       return null;
   }
@@ -131,6 +138,7 @@ function Sidebar({ activeRoute }) {
     { id: 'files',      label: 'Files',      href: '/features/projects/files',       icon: 'folder'    },
     { id: 'settings',   label: 'Settings',   href: '/features/projects/settings',    icon: 'settings'  },
     { id: 'terms',      label: 'Terms & Conditions', href: '/terms',                  icon: 'terms'     },
+    { id: 'privacy',    label: 'Privacy Policy',     href: '/privacy',                icon: 'privacy'   },
   ];
 
   return (

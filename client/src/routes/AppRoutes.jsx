@@ -17,6 +17,7 @@ import ChatPage from '../features/projects/pages/ChatPage';
 import AnalyticsPage from '../features/projects/pages/AnalyticsPage';
 import TasksPage from '../features/tasks/TasksPage';
 import TermsPage from '../pages/TermsPage';
+import PrivacyPage from '../pages/PrivacyPage';
 import '../App.css';
 
 function WorkspaceLayout({ children }) {
@@ -38,6 +39,20 @@ function TermsRoute() {
   ) : (
     <div className="min-h-screen bg-[#f3f4f6] flex flex-col justify-center items-center py-8">
       <TermsPage />
+    </div>
+  );
+}
+
+/** Dynamic wrapper for privacy page based on auth state */
+function PrivacyRoute() {
+  const { isAuthenticated } = useAuth();
+  return isAuthenticated ? (
+    <WorkspaceLayout>
+      <PrivacyPage />
+    </WorkspaceLayout>
+  ) : (
+    <div className="min-h-screen bg-[#f3f4f6] flex flex-col justify-center items-center py-8">
+      <PrivacyPage />
     </div>
   );
 }
@@ -69,8 +84,9 @@ function AppRoutes() {
         element={<GuestRoute><AuthLayout><Register /></AuthLayout></GuestRoute>}
       />
 
-      {/* Universal Terms & Conditions page */}
+      {/* Universal Legal pages */}
       <Route path="/terms" element={<TermsRoute />} />
+      <Route path="/privacy" element={<PrivacyRoute />} />
 
       {/* Protected workspace pages */}
       <Route path="/dashboard" element={<ProtectedRoute><WorkspaceLayout><DashboardPage /></WorkspaceLayout></ProtectedRoute>} />
