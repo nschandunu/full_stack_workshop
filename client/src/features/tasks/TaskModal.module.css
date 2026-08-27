@@ -94,6 +94,32 @@
   gap: 12px;
 }
 
+.statusRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.label {
+  font-weight: 700;
+  color: #000000;
+  font-size: 0.9rem;
+}
+
+.select {
+  padding: 6px 10px;
+  border: 2px solid #000000;
+  background-color: #ffffff;
+  font-weight: 700;
+  font-size: 0.875rem;
+  cursor: pointer;
+  border-radius: 0;
+}
+
+.select:hover:not(:disabled) {
+  background-color: #f5b700;
+}
+
 .badge {
   display: inline-block;
   font-weight: bold;

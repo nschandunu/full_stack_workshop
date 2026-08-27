@@ -5,14 +5,24 @@ import { TaskPriority } from "../../lib/types.jsx";
 
 /**
  * @typedef {import("../../lib/types.jsx").Task} Task
+ * @typedef {import("../../lib/types.jsx").Column} Column
  */
 
 /**
  * @param {Object} props
  * @param {Task | null} props.task
+ * @param {Column[]} [props.columns]
+ * @param {(taskId: string, newColumnId: string) => void} [props.onStatusChange]
  * @param {() => void} props.onClose
+ * @param {boolean} [props.isReadOnly]
  */
-export default function TaskModal({ task, onClose }) {
+export default function TaskModal({
+  task,
+  columns = [],
+  onStatusChange,
+  onClose,
+  isReadOnly = false,
+}) {
   useEffect(() => {
     if (!task) return;
 
@@ -65,6 +75,24 @@ export default function TaskModal({ task, onClose }) {
         )}
         <hr className={styles.divider} />
         <div className={styles.metaGroup}>
+          <div className={styles.statusRow}>
+            <label htmlFor="task-status-select" className={styles.label}>
+              Status / Column:
+            </label>
+            <select
+              id="task-status-select"
+              className={styles.select}
+              value={task.columnId}
+              disabled={isReadOnly}
+              onChange={(e) => onStatusChange?.(task.id, e.target.value)}
+            >
+              {columns.map((col) => (
+                <option key={col.id} value={col.id}>
+                  {col.title}
+                </option>
+              ))}
+            </select>
+          </div>
           <div>
             Priority:{" "}
             <span className={`${styles.badge} ${badgeClass}`}>
