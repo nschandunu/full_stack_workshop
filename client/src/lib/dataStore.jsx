@@ -57,12 +57,14 @@ export async function addColumn(column) {
   return parsed;
 }
 
+const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:5001/api";
+
 /**
  * @returns {Promise<Task[]>}
  */
 export async function getAllTasks() {
   try {
-    const res = await fetch("http://localhost:5000/api/tasks");
+    const res = await fetch(`${API_BASE}/tasks`);
     if (res.ok) {
       const serverTasks = await res.json();
       if (Array.isArray(serverTasks) && serverTasks.length > 0) {
@@ -131,7 +133,7 @@ export async function createTask(taskData) {
   };
 
   try {
-    const res = await fetch("http://localhost:5000/api/tasks", {
+    const res = await fetch(`${API_BASE}/tasks`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(newTask),
@@ -160,7 +162,7 @@ export async function createTask(taskData) {
  */
 export async function updateTask(taskId, updates) {
   try {
-    await fetch(`http://localhost:5000/api/tasks/${taskId}`, {
+    await fetch(`${API_BASE}/tasks/${taskId}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(updates),
@@ -198,7 +200,7 @@ export async function updateTask(taskId, updates) {
  */
 export async function deleteTask(taskId) {
   try {
-    await fetch(`http://localhost:5000/api/tasks/${taskId}`, {
+    await fetch(`${API_BASE}/tasks/${taskId}`, {
       method: "DELETE",
     });
   } catch {

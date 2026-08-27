@@ -1,6 +1,8 @@
+require('dotenv').config();
 const http = require('http');
 
-const BASE_URL = 'http://localhost:5000/api/tasks';
+const PORT = process.env.PORT || 5001;
+const BASE_URL = `http://localhost:${PORT}/api/tasks`;
 
 function request(method, path, body = null) {
   return new Promise((resolve, reject) => {
