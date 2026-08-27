@@ -89,13 +89,13 @@ flowchart TD
 
     subgraph Storage ["Persistence Layer"]
         Mongoose["Mongoose Models / In-Memory Stores"]
-        DB[(MongoDB Database)]
+        DB[("MongoDB Database")]
     end
 
     UI --> Router
     Router --> AuthCtx
     UI --> DataStore
-    DataStore -->|HTTP / JSON (Bearer Token)| Gate
+    DataStore -->|"HTTP / JSON (Bearer Token)"| Gate
     Gate --> AuthMdl
     AuthMdl --> Validators
     Validators --> Controllers
@@ -331,7 +331,7 @@ erDiagram
         string name
         string email UK
         string passwordHash
-        string role "admin | manager | member"
+        string role "admin, manager, member"
         datetime createdAt
     }
 
@@ -345,7 +345,7 @@ erDiagram
 
     COLUMN {
         string id PK
-        string name "To Do | Doing | Done"
+        string name "To Do, Doing, Done"
         number order
     }
 
@@ -355,7 +355,7 @@ erDiagram
         string description
         string columnId FK
         string boardId FK
-        string priority "low | medium | high"
+        string priority "low, medium, high"
         string assignee FK
         datetime dueDate
         datetime createdAt
