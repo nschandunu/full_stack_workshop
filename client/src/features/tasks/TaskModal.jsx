@@ -5,14 +5,24 @@ import { TaskPriority } from "../../lib/types.jsx";
 
 /**
  * @typedef {import("../../lib/types.jsx").Task} Task
+ * @typedef {import("../../lib/types.jsx").Column} Column
  */
 
 /**
  * @param {Object} props
  * @param {Task | null} props.task
+ * @param {Column[]} [props.columns]
+ * @param {(taskId: string, newColumnId: string) => void} [props.onStatusChange]
  * @param {() => void} props.onClose
+ * @param {boolean} [props.isReadOnly]
  */
-export default function TaskModal({ task, onClose }) {
+export default function TaskModal({
+  task,
+  columns = [],
+  onStatusChange,
+  onClose,
+  isReadOnly = false,
+}) {
   useEffect(() => {
     if (!task) return;
 
@@ -64,16 +74,38 @@ export default function TaskModal({ task, onClose }) {
           <p className={styles.description}>{task.description}</p>
         )}
         <hr className={styles.divider} />
+        
         <div className={styles.metaGroup}>
-          <div>
+          <div className={styles.statusSection}>
+            <span className={styles.sectionLabel}>Status / Column:</span>
+            <div className={styles.statusButtons}>
+              {columns.map((col) => {
+                const isActive = col.id === task.columnId;
+                return (
+                  <button
+                    key={col.id}
+                    type="button"
+                    className={`${styles.statusButton} ${isActive ? styles.statusButtonActive : ""}`}
+                    onClick={() => onStatusChange?.(task.id, col.id)}
+                    disabled={isReadOnly}
+                  >
+                    {isActive ? `✓ ${col.title}` : col.title}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          <div className={styles.metaRow}>
             Priority:{" "}
             <span className={`${styles.badge} ${badgeClass}`}>
               {task.priority}
             </span>
           </div>
-          {task.dueDate && <div>Due Date: {task.dueDate.slice(0, 10)}</div>}
-          {task.assignee && <div>Assignee: {task.assignee}</div>}
+          {task.dueDate && <div className={styles.metaRow}>Due Date: {task.dueDate.slice(0, 10)}</div>}
+          {task.assignee && <div className={styles.metaRow}>Assignee: {task.assignee}</div>}
         </div>
+
         <hr className={styles.divider} />
         <div className={styles.muted}>
           <div>Created: {task.createdAt.slice(0, 10)}</div>

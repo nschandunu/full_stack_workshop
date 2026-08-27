@@ -14,7 +14,6 @@
   }
   to {
     opacity: 1;
-    transform: scale(1);
   }
 }
 
@@ -38,7 +37,7 @@
   border: 2px solid #000000;
   border-radius: 0;
   padding: 24px;
-  max-width: 500px;
+  max-width: 520px;
   width: 90%;
   max-height: 90vh;
   overflow-y: auto;
@@ -63,10 +62,16 @@
   justify-content: center;
   line-height: 1;
   padding: 0;
+  transition: background-color 150ms ease;
 }
 
 .closeButton:hover {
   background-color: #f5b700;
+}
+
+.closeButton:focus-visible {
+  outline: 2px solid #000000;
+  outline-offset: 2px;
 }
 
 .title {
@@ -80,6 +85,7 @@
 .description {
   margin: 0 0 16px 0;
   line-height: 1.5;
+  color: #333333;
 }
 
 .divider {
@@ -91,7 +97,59 @@
 .metaGroup {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 14px;
+}
+
+.statusSection {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background-color: #f9f9f9;
+  border: 1.5px solid #000000;
+  padding: 12px;
+}
+
+.sectionLabel {
+  font-weight: 800;
+  color: #000000;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.statusButtons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.statusButton {
+  flex: 1;
+  min-width: 90px;
+  padding: 8px 12px;
+  border: 2px solid #000000;
+  background-color: #ffffff;
+  font-weight: 700;
+  font-size: 0.85rem;
+  cursor: pointer;
+  border-radius: 0;
+  transition: background-color 150ms ease, transform 100ms ease;
+  text-align: center;
+}
+
+.statusButton:hover:not(:disabled) {
+  background-color: #fdf2d0;
+  transform: translateY(-1px);
+}
+
+.statusButtonActive {
+  background-color: #f5b700 !important;
+  box-shadow: 2px 2px 0px #000000;
+}
+
+.metaRow {
+  font-size: 0.95rem;
+  color: #111111;
 }
 
 .badge {
@@ -102,6 +160,7 @@
   border-radius: 0;
   padding: 2px 8px;
   font-size: 12px;
+  margin-left: 4px;
 }
 
 .badgeHigh {
