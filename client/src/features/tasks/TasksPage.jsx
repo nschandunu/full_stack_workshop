@@ -2,11 +2,9 @@ import { useEffect, useState } from 'react';
 import TaskCard from './TaskCard';
 import TaskModal from './TaskModal';
 import { getAllTasks, getColumns, updateTask } from '../../lib/dataStore';
-import { usePermission } from '../../hooks/usePermission';
 import './tasks-page.css';
 
 export default function TasksPage() {
-  const { canEdit } = usePermission();
   const [tasks, setTasks] = useState([]);
   const [columns, setColumns] = useState([]);
   const [selectedTask, setSelectedTask] = useState(null);
@@ -79,13 +77,25 @@ export default function TasksPage() {
     }
   };
 
+  const handleMoveDirection = async (taskId, direction) => {
+    const task = tasks.find((t) => t.id === taskId);
+    if (!task) return;
+
+    const currentColIndex = columns.findIndex((c) => c.id === task.columnId);
+    const targetColIndex = currentColIndex + direction;
+    if (targetColIndex < 0 || targetColIndex >= columns.length) return;
+
+    const targetColumnId = columns[targetColIndex].id;
+    await handleStatusChange(taskId, targetColumnId);
+  };
+
   return (
     <main className="tasks-page">
       <header className="tasks-page__header">
         <div>
           <p className="tasks-page__eyebrow">Workspace</p>
           <h1>Tasks</h1>
-          <p className="tasks-page__intro">Open a task card to inspect its details and ownership.</p>
+          <p className="tasks-page__intro">Drag cards between columns or use the move buttons and modal to update progress.</p>
         </div>
         <strong className="tasks-page__count">{tasks.length} tasks</strong>
       </header>
@@ -93,7 +103,7 @@ export default function TasksPage() {
       {error ? <p role="alert" className="tasks-page__error">{error}</p> : null}
 
       <div className="tasks-board">
-        {columns.map((column) => {
+        {columns.map((column, colIdx) => {
           const columnTasks = tasks.filter((task) => task.columnId === column.id);
           const isDropActive = activeDropColId === column.id;
 
@@ -112,9 +122,18 @@ export default function TasksPage() {
               </div>
               <div className="tasks-column__cards">
                 {columnTasks.length ? (
-                  columnTasks.map((task) => <TaskCard key={task.id} task={task} onOpen={openTask} />)
+                  columnTasks.map((task) => (
+                    <TaskCard
+                      key={task.id}
+                      task={task}
+                      onOpen={openTask}
+                      onMove={handleMoveDirection}
+                      canMoveLeft={colIdx > 0}
+                      canMoveRight={colIdx < columns.length - 1}
+                    />
+                  ))
                 ) : (
-                  <p className="tasks-column__empty">No tasks here</p>
+                  <p className="tasks-column__empty">Drop tasks here</p>
                 )}
               </div>
             </section>
@@ -127,7 +146,6 @@ export default function TasksPage() {
         columns={columns}
         onStatusChange={handleStatusChange}
         onClose={() => setSelectedTask(null)}
-        isReadOnly={!canEdit}
       />
     </main>
   );

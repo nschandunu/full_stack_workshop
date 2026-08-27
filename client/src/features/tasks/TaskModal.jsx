@@ -74,34 +74,38 @@ export default function TaskModal({
           <p className={styles.description}>{task.description}</p>
         )}
         <hr className={styles.divider} />
+        
         <div className={styles.metaGroup}>
-          <div className={styles.statusRow}>
-            <label htmlFor="task-status-select" className={styles.label}>
-              Status / Column:
-            </label>
-            <select
-              id="task-status-select"
-              className={styles.select}
-              value={task.columnId}
-              disabled={isReadOnly}
-              onChange={(e) => onStatusChange?.(task.id, e.target.value)}
-            >
-              {columns.map((col) => (
-                <option key={col.id} value={col.id}>
-                  {col.title}
-                </option>
-              ))}
-            </select>
+          <div className={styles.statusSection}>
+            <span className={styles.sectionLabel}>Status / Column:</span>
+            <div className={styles.statusButtons}>
+              {columns.map((col) => {
+                const isActive = col.id === task.columnId;
+                return (
+                  <button
+                    key={col.id}
+                    type="button"
+                    className={`${styles.statusButton} ${isActive ? styles.statusButtonActive : ""}`}
+                    onClick={() => onStatusChange?.(task.id, col.id)}
+                    disabled={isReadOnly}
+                  >
+                    {isActive ? `✓ ${col.title}` : col.title}
+                  </button>
+                );
+              })}
+            </div>
           </div>
-          <div>
+
+          <div className={styles.metaRow}>
             Priority:{" "}
             <span className={`${styles.badge} ${badgeClass}`}>
               {task.priority}
             </span>
           </div>
-          {task.dueDate && <div>Due Date: {task.dueDate.slice(0, 10)}</div>}
-          {task.assignee && <div>Assignee: {task.assignee}</div>}
+          {task.dueDate && <div className={styles.metaRow}>Due Date: {task.dueDate.slice(0, 10)}</div>}
+          {task.assignee && <div className={styles.metaRow}>Assignee: {task.assignee}</div>}
         </div>
+
         <hr className={styles.divider} />
         <div className={styles.muted}>
           <div>Created: {task.createdAt.slice(0, 10)}</div>
