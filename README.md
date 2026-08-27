@@ -9,7 +9,7 @@
 [![MongoDB](https://img.shields.io/badge/Database-MongoDB%20%7C%20Mongoose-47A248?style=for-the-badge&logo=mongodb&logoColor=white)](https://www.mongodb.com/)
 [![JWT](https://img.shields.io/badge/Security-JWT%20%7C%20Bcrypt-000000?style=for-the-badge&logo=jsonwebtokens&logoColor=white)](https://jwt.io/)
 [![Router](https://img.shields.io/badge/Routing-React%20Router%20v7-CA4245?style=for-the-badge&logo=reactrouter&logoColor=white)](https://reactrouter.com/)
-[![License](https://img.shields.io/badge/License-MIT-blue?style=for-the-badge)](LICENSE)
+[![License](https://img.shields.io/badge/License-MIT-blue?style=for-the-badge)](LICENSE.md)
 
 <br/>
 
@@ -599,7 +599,7 @@ full_stack_workshop/
 
 ## 📜 License
 
-Distributed under the **MIT License**. See `LICENSE` for more information.
+Distributed under the **MIT License**. See [`LICENSE.md`](LICENSE.md) for more information.
 
 <div align="center">
   <sub>CollabBoard Full-Stack Workshop Project • Crafted with Passion & Modern Web Technologies ⚡</sub>
