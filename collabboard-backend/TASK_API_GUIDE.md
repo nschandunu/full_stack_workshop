@@ -68,3 +68,54 @@ The Task Lifecycle API provides full CRUD capabilities and workflow state transi
   }
 }
 ```
+
+## cURL Testing Reference Guide
+
+### 1. Fetch All Tasks (with optional filters)
+```bash
+# Get all tasks
+curl -X GET http://localhost:5000/api/tasks
+
+# Filter by column ID
+curl -X GET "http://localhost:5000/api/tasks?columnId=col-inprogress"
+
+# Filter by board ID
+curl -X GET "http://localhost:5000/api/tasks?boardId=board-1"
+```
+
+### 2. Fetch Single Task by ID
+```bash
+curl -X GET http://localhost:5000/api/tasks/task-1
+```
+
+### 3. Create a New Task
+```bash
+curl -X POST http://localhost:5000/api/tasks \
+  -H "Content-Type: application/json" \
+  -d '{"title":"API Documentation","description":"Complete Member 4 guides","columnId":"col-todo","priority":"high","assignee":"user-1"}'
+```
+
+### 4. Move Task (Drag & Drop Column Transfer)
+```bash
+curl -X PUT http://localhost:5000/api/tasks/task-1/move \
+  -H "Content-Type: application/json" \
+  -d '{"targetColumnId":"col-inprogress"}'
+```
+
+### 5. Edit Task Details
+```bash
+# Partial update with PATCH
+curl -X PATCH http://localhost:5000/api/tasks/task-1 \
+  -H "Content-Type: application/json" \
+  -d '{"priority":"low","assignee":"user-3"}'
+
+# Full update with PUT
+curl -X PUT http://localhost:5000/api/tasks/task-1 \
+  -H "Content-Type: application/json" \
+  -d '{"title":"Updated Scaffolding Task","priority":"medium"}'
+```
+
+### 6. Delete a Task
+```bash
+curl -X DELETE http://localhost:5000/api/tasks/task-1
+```
