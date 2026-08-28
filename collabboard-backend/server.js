@@ -2,6 +2,9 @@ const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
 
+const swaggerUi = require('swagger-ui-express');
+const swaggerSpec = require('./swagger');
+
 const authRoutes = require('./routes/authRoutes');
 const boardRoutes = require('./routes/boardRoutes');
 const taskRoutes = require('./routes/taskRoutes');
@@ -17,6 +20,9 @@ app.use(express.json());
 app.get('/', (req, res) => {
   res.json({ message: 'CollabBoard API is running' });
 });
+
+// Swagger docs
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // Mounted routes
 app.use('/api/auth', authRoutes);
@@ -35,4 +41,5 @@ app.use((err, req, res, next) => {
 
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
+  console.log(`API docs available at http://localhost:${PORT}/api-docs`);
 });
