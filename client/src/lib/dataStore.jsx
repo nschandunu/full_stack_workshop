@@ -60,6 +60,20 @@ export async function addColumn(column) {
 const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:5001/api";
 
 /**
+ * Backend returns null for optional fields; Zod .optional() rejects null.
+ * Convert null → undefined so Zod parsing succeeds.
+ * @param {Record<string, unknown>} t
+ */
+function sanitizeTask(t) {
+  return {
+    ...t,
+    description: t.description ?? undefined,
+    assignee:    t.assignee    ?? undefined,
+    dueDate:     t.dueDate     ?? undefined,
+  };
+}
+
+/**
  * @returns {Promise<Task[]>}
  */
 export async function getAllTasks() {
@@ -68,7 +82,7 @@ export async function getAllTasks() {
     if (res.ok) {
       const serverTasks = await res.json();
       if (Array.isArray(serverTasks) && serverTasks.length > 0) {
-        _tasks = serverTasks.map((t) => TaskSchema.parse(t));
+        _tasks = serverTasks.map((t) => TaskSchema.parse(sanitizeTask(t)));
         return _tasks;
       }
     }
@@ -140,7 +154,7 @@ export async function createTask(taskData) {
     });
     if (res.ok) {
       const serverTask = await res.json();
-      const parsed = TaskSchema.parse(serverTask);
+      const parsed = TaskSchema.parse(sanitizeTask(serverTask));
       _tasks.push(parsed);
       const col = _columns.find((c) => c.id === parsed.columnId);
       if (col && !col.taskIds.includes(parsed.id)) {
