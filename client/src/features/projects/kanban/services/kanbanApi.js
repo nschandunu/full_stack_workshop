@@ -1,145 +1,95 @@
+const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:5001/api';
+
+const DEFAULT_BOARD_ID = 'board-1';
+
 export const KANBAN_STATUSES = ['todo', 'doing', 'done'];
 
-const sampleBoard = {
-  id: 'board-1',
-  name: 'CollabBoard',
-  ownerId: 'owner-1',
-  createdAt: '2026-08-08T09:00:00.000Z',
+/**
+ * Frontend uses status: 'todo' | 'doing' | 'done'
+ * Backend uses columnId: 'col-todo' | 'col-inprogress' | 'col-done'
+ */
+const STATUS_TO_COL = {
+  todo:  'col-todo',
+  doing: 'col-inprogress',
+  done:  'col-done',
 };
 
-const sampleTasks = [
-  {
-    id: 'task-1',
-    title: 'Define project scope',
-    description: 'Confirm the first workshop milestone and deliverables.',
-    assignee: 'Amina',
-    priority: 'high',
-    dueDate: '2026-08-10',
-    status: 'todo',
-    boardId: 'board-1',
-    createdAt: '2026-08-08T09:10:00.000Z',
-    updatedAt: '2026-08-08T09:10:00.000Z',
-  },
-  {
-    id: 'task-2',
-    title: 'Build board shell',
-    description: 'Lay out the Kanban board and core components.',
-    assignee: 'Noah',
-    priority: 'medium',
-    dueDate: '2026-08-11',
-    status: 'doing',
-    boardId: 'board-1',
-    createdAt: '2026-08-08T09:20:00.000Z',
-    updatedAt: '2026-08-08T09:20:00.000Z',
-  },
-  {
-    id: 'task-3',
-    title: 'Design task card',
-    description: 'Show title, metadata, and move controls.',
-    assignee: 'Lina',
-    priority: 'medium',
-    dueDate: '2026-08-12',
-    status: 'todo',
-    boardId: 'board-1',
-    createdAt: '2026-08-08T09:30:00.000Z',
-    updatedAt: '2026-08-08T09:30:00.000Z',
-  },
-  {
-    id: 'task-4',
-    title: 'Hook up drag and drop',
-    description: 'Allow cards to move between workflow columns.',
-    assignee: 'Kai',
-    priority: 'high',
-    dueDate: '2026-08-13',
-    status: 'doing',
-    boardId: 'board-1',
-    createdAt: '2026-08-08T09:40:00.000Z',
-    updatedAt: '2026-08-08T09:40:00.000Z',
-  },
-  {
-    id: 'task-5',
-    title: 'Prepare review notes',
-    description: 'Capture open questions for the next workshop session.',
-    assignee: 'Maya',
-    priority: 'low',
-    dueDate: '2026-08-14',
-    status: 'done',
-    boardId: 'board-1',
-    createdAt: '2026-08-08T09:50:00.000Z',
-    updatedAt: '2026-08-08T09:50:00.000Z',
-  },
-];
+const COL_TO_STATUS = {
+  'col-todo':       'todo',
+  'col-inprogress': 'doing',
+  'col-done':       'done',
+};
 
-let tasksStore = [...sampleTasks];
+/** Backend task shape → kanban frontend shape */
+function toKanban(task) {
+  return {
+    ...task,
+    status:  COL_TO_STATUS[task.columnId] ?? 'todo',
+    boardId: task.boardId ?? DEFAULT_BOARD_ID,
+  };
+}
 
-const cloneTask = (task) => ({ ...task });
-
-const normalizeTask = (task) => ({
-  assignee: '',
-  priority: 'medium',
-  dueDate: '',
-  description: '',
-  boardId: sampleBoard.id,
-  status: 'todo',
-  ...task,
-});
+async function apiFetch(path, options = {}) {
+  const res = await fetch(`${API_BASE}${path}`, {
+    headers: { 'Content-Type': 'application/json' },
+    ...options,
+  });
+  if (!res.ok) {
+    const body = await res.json().catch(() => ({}));
+    throw new Error(body?.error?.message || `Request failed: ${res.status}`);
+  }
+  return res.json();
+}
 
 export async function getBoards() {
-  return [sampleBoard];
+  // Board selection not in UI yet — return the default seeded board
+  return [{ id: DEFAULT_BOARD_ID, name: 'CollabBoard', ownerId: 'system', createdAt: new Date().toISOString() }];
 }
 
 export async function getTasks() {
-  return tasksStore.map(cloneTask);
+  const tasks = await apiFetch(`/tasks?boardId=${DEFAULT_BOARD_ID}`);
+  return tasks.map(toKanban);
 }
 
 export async function getBoardTasks(boardId) {
-  return tasksStore.filter((task) => task.boardId === boardId).map(cloneTask);
+  const tasks = await apiFetch(`/tasks?boardId=${boardId}`);
+  return tasks.map(toKanban);
 }
 
 export async function createTask(taskInput) {
-  const now = new Date().toISOString();
-  const task = normalizeTask(taskInput);
-  const createdTask = {
-    ...task,
-    id: crypto.randomUUID(),
-    createdAt: now,
-    updatedAt: now,
-  };
-
-  tasksStore = [...tasksStore, createdTask];
-  return cloneTask(createdTask);
+  const { status, ...rest } = taskInput;
+  const task = await apiFetch('/tasks', {
+    method: 'POST',
+    body: JSON.stringify({
+      ...rest,
+      columnId: STATUS_TO_COL[status] ?? 'col-todo',
+      boardId:  rest.boardId ?? DEFAULT_BOARD_ID,
+    }),
+  });
+  return toKanban(task);
 }
 
 export async function updateTask(taskId, changes) {
-  let updatedTask = null;
+  const { status, ...rest } = changes;
+  const payload = { ...rest };
+  if (status) payload.columnId = STATUS_TO_COL[status] ?? 'col-todo';
 
-  tasksStore = tasksStore.map((task) => {
-    if (task.id !== taskId) {
-      return task;
-    }
-
-    updatedTask = {
-      ...task,
-      ...changes,
-      updatedAt: new Date().toISOString(),
-    };
-
-    return updatedTask;
+  const task = await apiFetch(`/tasks/${taskId}`, {
+    method: 'PATCH',
+    body: JSON.stringify(payload),
   });
-
-  return updatedTask ? cloneTask(updatedTask) : null;
+  return toKanban(task);
 }
 
 export async function moveTask(taskId, newStatus) {
-  if (!KANBAN_STATUSES.includes(newStatus)) {
-    return null;
-  }
-
-  return updateTask(taskId, { status: newStatus });
+  if (!KANBAN_STATUSES.includes(newStatus)) return null;
+  const task = await apiFetch(`/tasks/${taskId}/move`, {
+    method: 'PUT',
+    body: JSON.stringify({ targetColumnId: STATUS_TO_COL[newStatus] }),
+  });
+  return toKanban(task);
 }
 
 export async function deleteTask(taskId) {
-  const task = tasksStore.find((entry) => entry.id === taskId) ?? null;
-  tasksStore = tasksStore.filter((entry) => entry.id !== taskId);
-  return task ? cloneTask(task) : null;
+  return apiFetch(`/tasks/${taskId}`, { method: 'DELETE' });
 }

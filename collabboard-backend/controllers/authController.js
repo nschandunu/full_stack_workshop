@@ -17,7 +17,7 @@ function signToken(userId) {
  */
 const register = async (req, res, next) => {
   try {
-    const { name, email, password } = req.body;
+    const { name, email, password, role } = req.body;
 
     // --- Validation ---
     if (!name || !email || !password) {
@@ -34,7 +34,7 @@ const register = async (req, res, next) => {
 
     // --- Hash & persist ---
     const passwordHash = await bcrypt.hash(password, SALT_ROUNDS);
-    const user = UserStore.create({ name, email, passwordHash });
+    const user = UserStore.create({ name, email, passwordHash, role });
 
     const token = signToken(user.id);
 

@@ -1,0 +1,233 @@
+.terms-container {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 2.5rem 1.5rem 4rem;
+  color: #1f2937;
+  font-family: inherit;
+}
+
+.terms-header {
+  border-bottom: 2px solid #e5e7eb;
+  padding-bottom: 1.75rem;
+  margin-bottom: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.terms-header-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.terms-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  background-color: #f3f4f6;
+  border: 1px solid #d1d5db;
+  color: #374151;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 0.3rem 0.75rem;
+  border-radius: 9999px;
+}
+
+.terms-title {
+  font-size: 2.25rem;
+  font-weight: 800;
+  color: #111827;
+  letter-spacing: -0.025em;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.terms-subtitle {
+  font-size: 0.95rem;
+  color: #6b7280;
+  margin-top: 0.5rem;
+}
+
+.terms-actions {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.terms-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  border: 1px solid #d1d5db;
+  background-color: #ffffff;
+  color: #374151;
+  text-decoration: none;
+}
+
+.terms-btn:hover {
+  background-color: #f9fafb;
+  border-color: #9ca3af;
+  color: #111827;
+}
+
+.terms-btn-primary {
+  background-color: #111827;
+  color: #ffffff;
+  border-color: #111827;
+}
+
+.terms-btn-primary:hover {
+  background-color: #1f2937;
+  border-color: #1f2937;
+  color: #ffffff;
+}
+
+.terms-content-layout {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  gap: 2.5rem;
+  align-items: start;
+}
+
+@media (max-width: 768px) {
+  .terms-content-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+.terms-nav {
+  position: sticky;
+  top: 2rem;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 1.25rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.terms-nav-title {
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #9ca3af;
+  margin-bottom: 0.75rem;
+}
+
+.terms-nav-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.terms-nav-link {
+  display: block;
+  font-size: 0.85rem;
+  color: #4b5563;
+  text-decoration: none;
+  padding: 0.4rem 0.6rem;
+  border-radius: 4px;
+  transition: all 0.15s ease;
+}
+
+.terms-nav-link:hover {
+  background-color: #f3f4f6;
+  color: #111827;
+  font-weight: 600;
+}
+
+.terms-body {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 2rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.terms-section {
+  scroll-margin-top: 2rem;
+}
+
+.terms-section h2 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #111827;
+  margin-bottom: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.terms-section p {
+  font-size: 0.925rem;
+  line-height: 1.65;
+  color: #4b5563;
+  margin-bottom: 0.75rem;
+}
+
+.terms-section ul {
+  margin: 0.5rem 0 1rem 1.25rem;
+  padding: 0;
+  font-size: 0.925rem;
+  line-height: 1.65;
+  color: #4b5563;
+}
+
+.terms-section li {
+  margin-bottom: 0.4rem;
+}
+
+.terms-callout {
+  background-color: #f9fafb;
+  border-left: 4px solid #f59e0b;
+  padding: 1rem 1.25rem;
+  border-radius: 0 6px 6px 0;
+  margin: 1rem 0;
+}
+
+.terms-callout-title {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: #92400e;
+  margin-bottom: 0.25rem;
+}
+
+.terms-callout p {
+  margin: 0;
+  font-size: 0.875rem;
+  color: #78350f;
+}
+
+.terms-footer {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #e5e7eb;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.terms-ack-box {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}

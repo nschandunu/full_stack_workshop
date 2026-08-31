@@ -1,13 +1,16 @@
 import { useEffect, useState } from 'react';
 import TaskCard from './TaskCard';
 import TaskModal from './TaskModal';
-import { getAllTasks, getColumns, updateTask } from '../../lib/dataStore';
+import CreateTaskModal from './CreateTaskModal';
+import { getAllTasks, getColumns, updateTask, createTask } from '../../lib/dataStore';
 import './tasks-page.css';
 
 export default function TasksPage() {
   const [tasks, setTasks] = useState([]);
   const [columns, setColumns] = useState([]);
   const [selectedTask, setSelectedTask] = useState(null);
+  const [isCreateOpen, setIsCreateOpen] = useState(false);
+  const [createColumnId, setCreateColumnId] = useState('col-todo');
   const [error, setError] = useState('');
   const [activeDropColId, setActiveDropColId] = useState(null);
 
@@ -31,6 +34,21 @@ export default function TasksPage() {
 
   const openTask = (taskId) => {
     setSelectedTask(tasks.find((task) => task.id === taskId) ?? null);
+  };
+
+  const handleOpenCreate = (columnId = 'col-todo') => {
+    setCreateColumnId(columnId);
+    setIsCreateOpen(true);
+  };
+
+  const handleCreateTask = async (taskData) => {
+    try {
+      const created = await createTask(taskData);
+      setTasks((prev) => [...prev, created]);
+    } catch {
+      setError('Could not create task.');
+      throw new Error('Could not create task.');
+    }
   };
 
   const handleDragOver = (e, columnId) => {
@@ -97,7 +115,16 @@ export default function TasksPage() {
           <h1>Tasks</h1>
           <p className="tasks-page__intro">Drag cards between columns or use the move buttons and modal to update progress.</p>
         </div>
-        <strong className="tasks-page__count">{tasks.length} tasks</strong>
+        <div className="tasks-page__header-actions">
+          <strong className="tasks-page__count">{tasks.length} tasks</strong>
+          <button
+            type="button"
+            className="tasks-page__create-btn"
+            onClick={() => handleOpenCreate(columns[0]?.id || 'col-todo')}
+          >
+            + Create Task
+          </button>
+        </div>
       </header>
 
       {error ? <p role="alert" className="tasks-page__error">{error}</p> : null}
@@ -118,7 +145,18 @@ export default function TasksPage() {
             >
               <div className="tasks-column__header">
                 <h2 id={`${column.id}-title`}>{column.title}</h2>
-                <span>{columnTasks.length}</span>
+                <div className="tasks-column__header-right">
+                  <button
+                    type="button"
+                    className="tasks-column__add-btn"
+                    onClick={() => handleOpenCreate(column.id)}
+                    title={`Add task to ${column.title}`}
+                    aria-label={`Add task to ${column.title}`}
+                  >
+                    +
+                  </button>
+                  <span>{columnTasks.length}</span>
+                </div>
               </div>
               <div className="tasks-column__cards">
                 {columnTasks.length ? (
@@ -135,11 +173,26 @@ export default function TasksPage() {
                 ) : (
                   <p className="tasks-column__empty">Drop tasks here</p>
                 )}
+                <button
+                  type="button"
+                  className="tasks-column__bottom-add-btn"
+                  onClick={() => handleOpenCreate(column.id)}
+                >
+                  + Add task to {column.title}
+                </button>
               </div>
             </section>
           );
         })}
       </div>
+
+      <CreateTaskModal
+        isOpen={isCreateOpen}
+        columns={columns}
+        initialColumnId={createColumnId}
+        onClose={() => setIsCreateOpen(false)}
+        onCreateTask={handleCreateTask}
+      />
 
       <TaskModal
         task={selectedTask}
